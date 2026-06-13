@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/educall/static/css/main.f49d3371.css",
+    "main.js": "/educall/static/js/main.e814131e.js",
+    "index.html": "/educall/index.html",
+    "main.f49d3371.css.map": "/educall/static/css/main.f49d3371.css.map",
+    "main.e814131e.js.map": "/educall/static/js/main.e814131e.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f49d3371.css",
+    "static/js/main.e814131e.js"
+  ]
+}
