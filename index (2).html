@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>EduCall — Frontend Preview</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--pri:#003461;--pri2:#004b87;--sec:#1b6d24;--seccont:#a0f399;--err:#6e0009;--errcont:#ffa098;--surf:#f8f9ff;--surflo:#f0f4fd;--surfhigh:#e4e8f1;--txt:#171c22;--txtsub:#424750;--outline:#727781;--outline-var:#c2c6d1;--sidebar:220px;--topbar:56px}
+body{font-family:'Inter',sans-serif;background:var(--surf);color:var(--txt);font-size:14px}
+.app{display:flex;height:100vh;overflow:hidden}
+.sidebar{width:var(--sidebar);flex-shrink:0;background:#f0f4fd;display:flex;flex-direction:column;overflow-y:auto;border-right:1px solid var(--outline-var)}
+.sidebar-logo{padding:22px 16px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--outline-var)}
+.logo-mark{width:34px;height:34px;border-radius:10px;background:var(--pri);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-name{font-family:'Manrope',sans-serif;font-size:17px;font-weight:800;color:var(--pri);letter-spacing:-0.02em}
+.logo-sub{font-size:10px;color:var(--txtsub);margin-top:1px}
+.nav{padding:8px 0;flex:1}
+.nav-item{display:flex;align-items:center;gap:10px;padding:0 12px;height:40px;margin:1px 8px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:500;color:var(--txtsub);border:none;background:transparent;width:calc(100% - 16px);text-align:left;position:relative;transition:background 0.12s}
+.nav-item:hover{background:#e4e8f1}
+.nav-item.active{background:white;color:var(--pri);font-weight:600;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.nav-item.active::before{content:'';position:absolute;left:-8px;top:50%;transform:translateY(-50%);width:3px;height:20px;border-radius:0 2px 2px 0;background:var(--pri2)}
+.nav-icon{font-size:18px;color:currentColor;flex-shrink:0}
+.nav-badge{margin-left:auto;background:var(--pri);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px}
+.demo-strip{margin:0 8px 8px;padding:6px 10px;border-radius:8px;background:rgba(239,159,39,.12);color:#854F0B;font-size:10px;font-weight:600;text-align:center}
+.user-foot{padding:12px}
+.user-card{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;background:white;border:1px solid var(--outline-var)}
+.avatar{width:30px;height:30px;border-radius:8px;background:var(--pri);color:white;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Manrope',sans-serif}
+.user-name{font-size:12px;font-weight:600}
+.user-role{font-size:10px;color:var(--txtsub)}
+.main{flex:1;overflow-y:auto;display:flex;flex-direction:column;background:var(--surf)}
+.topbar{padding:0 28px;height:var(--topbar);flex-shrink:0;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--outline-var);background:white}
+.page-title{font-family:'Manrope',sans-serif;font-size:20px;font-weight:800;letter-spacing:-0.02em}
+.page-sub{font-size:12px;color:var(--txtsub);margin-top:2px}
+.topbar-actions{display:flex;gap:8px;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:0 14px;height:34px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--outline-var);background:white;color:var(--txt);transition:all .12s;font-family:'Inter',sans-serif}
+.btn:hover{background:var(--surflo)}
+.btn-primary{background:var(--pri);color:white;border-color:transparent;box-shadow:0 3px 10px rgba(0,52,97,.22)}
+.btn-primary:hover{background:var(--pri2)}
+.content{padding:22px 28px 40px;flex:1}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.stat-card{background:white;border-radius:14px;padding:14px 16px;box-shadow:0 2px 8px rgba(23,28,34,.06)}
+.chip{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:12px;font-size:10px;font-weight:700}
+.chip-blue{background:#dbeafe;color:#1d4ed8}.chip-green{background:#dcfce7;color:#166534}.chip-amber{background:#fef3c7;color:#92400e}.chip-red{background:#fee2e2;color:#991b1b}
+.stat-val{font-family:'Manrope',sans-serif;font-size:28px;font-weight:800;letter-spacing:-0.03em;line-height:1;margin:8px 0 4px}
+.stat-lbl{font-size:11px;color:var(--txtsub);font-weight:500}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.card{background:white;border-radius:14px;padding:16px;box-shadow:0 2px 8px rgba(23,28,34,.06)}
+.card-title{font-family:'Manrope',sans-serif;font-size:15px;font-weight:700;margin-bottom:12px}
+.badge{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:12px;font-size:10px;font-weight:700}
+.badge-green{background:#dcfce7;color:#166534}.badge-blue{background:#dbeafe;color:#1d4ed8}.badge-red{background:#fee2e2;color:#991b1b}.badge-amber{background:#fef3c7;color:#92400e}.badge-purple{background:#ede9fe;color:#5b21b6}
+.bar-bg{height:5px;background:var(--outline-var);border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;transition:width .5s ease}
+.page-content{display:none}
+.page-content.visible{display:block}
+.kiosk-wrap{background:var(--pri);min-height:calc(100vh - var(--topbar));display:flex;flex-direction:column}
+.kiosk-header{padding:16px 28px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.1)}
+.kiosk-logo{font-family:'Manrope',sans-serif;font-size:18px;font-weight:800;color:white;letter-spacing:-0.02em}
+.kiosk-body{flex:1;display:flex;align-items:center;justify-content:center;padding:24px}
+.kiosk-card{background:rgba(255,255,255,.1);backdrop-filter:blur(20px);border-radius:22px;padding:36px 40px;text-align:center;width:340px}
+.fp-ring{width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;cursor:pointer;transition:all .2s}
+.fp-ring:hover{background:rgba(255,255,255,.15);transform:scale(1.03)}
+.fp-icon{font-size:60px!important;color:rgba(255,255,255,.8)}
+.fp-icon.success{color:#a0f399}.fp-icon.scanning{animation:pulse 1s ease-in-out infinite}
+.kiosk-main-btn{background:white;color:var(--pri);border:none;padding:12px 28px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;width:100%;margin-top:10px;font-family:'Inter',sans-serif}
+.kiosk-main-btn:hover{background:#f0f4fd}
+.online-pill{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:12px;font-size:10px;font-weight:700;background:rgba(160,243,153,.2);color:#a0f399}
+.online-dot{width:6px;height:6px;border-radius:50%;background:#a0f399}
+.kiosk-result{background:rgba(255,255,255,.94);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:14px;margin-top:16px;animation:slideUp .3s ease-out}
+.result-av{width:44px;height:44px;border-radius:12px;background:var(--pri);color:white;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Manrope',sans-serif}
+table{width:100%;border-collapse:collapse}
+th{padding:10px 14px;text-align:left;font-size:10px;font-weight:700;color:var(--txtsub);background:var(--surflo);text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--outline-var)}
+td{padding:11px 14px;border-bottom:1px solid var(--surfhigh);font-size:12px}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--surflo)}
+.av-sm{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.av-blue{background:var(--surfhigh);color:var(--txtsub)}.av-red{background:#fee2e2;color:#991b1b}.av-green{background:#dcfce7;color:#166534}
+.class-row{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--surfhigh)}
+.class-lbl{font-size:11px;font-weight:600;color:var(--txtsub);width:36px;flex-shrink:0}
+.progress-card{background:white;border-radius:14px;padding:16px;box-shadow:0 2px 8px rgba(23,28,34,.06)}
+.alert-row{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border-bottom:1px solid var(--surfhigh)}
+.alert-row:last-child{border-bottom:none}
+.alert-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.field-label{font-size:10px;font-weight:700;color:var(--txtsub);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;display:block}
+input[type=text],input[type=email],select{width:100%;padding:9px 13px;border:1.5px solid var(--outline-var);border-radius:8px;background:white;font-family:'Inter',sans-serif;font-size:13px;color:var(--txt);margin-bottom:12px;outline:none}
+input[type=text]:focus,input[type=email]:focus,select:focus{border-color:var(--pri2)}
+.webhook-url{width:100%;padding:7px 10px;border-radius:7px;border:1.5px solid var(--outline-var);background:var(--surflo);font-family:monospace;font-size:11px;color:var(--txtsub);margin-bottom:6px}
+.phase0-row{display:flex;align-items:center;gap:9px;padding:8px 12px;background:var(--surflo);border-radius:8px;margin-bottom:4px;font-size:12px;font-weight:500}
+@keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.scanning-ring{animation:spin 1s linear infinite}
+.mi{font-family:'Material Symbols Outlined';font-size:18px;line-height:1;vertical-align:middle;user-select:none;font-style:normal}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></div>
+      <div><div class="logo-name">EduCall</div><div class="logo-sub">Sunshine Secondary School</div></div>
+    </div>
+    <nav class="nav">
+      <div class="demo-strip">⚡ Demo mode</div>
+      <button class="nav-item active" onclick="showPage('dashboard',this)"><span class="mi nav-icon">dashboard</span>Dashboard</button>
+      <button class="nav-item" onclick="showPage('kiosk',this)"><span class="mi nav-icon">fingerprint</span>Biometric Kiosk</button>
+      <button class="nav-item" onclick="showPage('attendance',this)"><span class="mi nav-icon">fact_check</span>Attendance</button>
+      <button class="nav-item" onclick="showPage('students',this)"><span class="mi nav-icon">groups</span>Students <span class="nav-badge">12</span></button>
+      <button class="nav-item" onclick="showPage('teachers',this)"><span class="mi nav-icon">school</span>Teachers</button>
+      <button class="nav-item" onclick="showPage('enrolment',this)"><span class="mi nav-icon">person_check</span>Enrolment</button>
+      <button class="nav-item" onclick="showPage('reports',this)"><span class="mi nav-icon">bar_chart</span>Reports</button>
+      <button class="nav-item" onclick="showPage('alerts',this)"><span class="mi nav-icon">notifications</span>Parent Alerts <span class="nav-badge" id="alertBadge">2</span></button>
+      <button class="nav-item" onclick="showPage('settings',this)"><span class="mi nav-icon">settings</span>Settings</button>
+    </nav>
+    <div class="user-foot">
+      <div class="user-card">
+        <div class="avatar">AG</div>
+        <div><div class="user-name">Arike Giwa</div><div class="user-role">Administrator</div></div>
+        <span class="mi" style="margin-left:auto;font-size:16px;color:var(--txtsub);cursor:pointer" title="Sign out">logout</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- DASHBOARD -->
+    <div id="page-dashboard" class="page-content visible">
+      <div class="topbar"><div><div class="page-title">Dashboard</div><div class="page-sub">Friday, 12 June 2026</div></div><div class="topbar-actions"><button class="btn" onclick="showPage('kiosk',null)"><span class="mi">fingerprint</span>Open Kiosk</button></div></div>
+      <div class="content">
+        <div class="stat-grid">
+          <div class="stat-card"><span class="chip chip-blue"><span class="mi" style="font-size:11px">groups</span>Students</span><div class="stat-val">12</div><div class="stat-lbl">Total enrolled SS1–SS3</div></div>
+          <div class="stat-card"><span class="chip chip-green"><span class="mi" style="font-size:11px">fingerprint</span>Biometric</span><div class="stat-val">10</div><div class="stat-lbl">Fingerprints enrolled</div></div>
+          <div class="stat-card"><span class="chip chip-amber"><span class="mi" style="font-size:11px">accessibility</span>SEN</span><div class="stat-val">2</div><div class="stat-lbl">SEN students tracked</div></div>
+          <div class="stat-card"><span class="chip chip-red"><span class="mi" style="font-size:11px">notifications</span>Alerts</span><div class="stat-val" id="alertStat">2</div><div class="stat-lbl">Pending parent alerts</div></div>
+        </div>
+        <div class="two-col">
+          <div class="card">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div class="card-title" style="margin-bottom:0">Today's Sessions</div><button class="btn btn-primary" onclick="showPage('kiosk',null)" style="font-size:11px;height:30px"><span class="mi" style="font-size:14px">fingerprint</span>Kiosk</button></div>
+            <div style="display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:10px;background:var(--surflo);margin-bottom:4px">
+              <div style="width:32px;height:32px;border-radius:9px;background:var(--surfhigh);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span class="mi" style="font-size:15px;color:var(--txtsub)">menu_book</span></div>
+              <div style="flex:1"><div style="font-size:12px;font-weight:600">Mathematics</div><div style="font-size:10px;color:var(--txtsub)">SS2A · Period 3 · 10:40–11:40</div></div>
+              <div style="width:70px"><div class="bar-bg"><div class="bar-fill" style="width:87%;background:var(--sec)"></div></div></div>
+              <span style="font-size:12px;font-weight:700;color:var(--sec)">87%</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:10px;background:var(--surflo);margin-bottom:4px">
+              <div style="width:32px;height:32px;border-radius:9px;background:var(--surfhigh);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span class="mi" style="font-size:15px;color:var(--txtsub)">menu_book</span></div>
+              <div style="flex:1"><div style="font-size:12px;font-weight:600">English Language</div><div style="font-size:10px;color:var(--txtsub)">SS2A · Period 1 · 8:40–9:40</div></div>
+              <div style="width:70px"><div class="bar-bg"><div class="bar-fill" style="width:75%;background:#b45309"></div></div></div>
+              <span style="font-size:12px;font-weight:700;color:#b45309">75%</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:10px;background:var(--surflo);margin-bottom:4px">
+              <div style="width:32px;height:32px;border-radius:9px;background:var(--surfhigh);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span class="mi" style="font-size:15px;color:var(--txtsub)">menu_book</span></div>
+              <div style="flex:1"><div style="font-size:12px;font-weight:600">Physics</div><div style="font-size:10px;color:var(--txtsub)">SS1A · Period 2 · 9:40–10:40</div></div>
+              <div style="width:70px"><div class="bar-bg"><div class="bar-fill" style="width:60%;background:#991b1b"></div></div></div>
+              <span style="font-size:12px;font-weight:700;color:#991b1b">60%</span>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">Attendance by Class</div>
+            <div class="class-row"><span class="class-lbl">SS1A</span><div class="bar-bg" style="flex:1"><div class="bar-fill" style="width:82%;background:var(--sec)"></div></div><span style="font-size:11px;font-weight:700;color:var(--sec);min-width:30px;text-align:right">82%</span></div>
+            <div class="class-row"><span class="class-lbl">SS1B</span><div class="bar-bg" style="flex:1"><div class="bar-fill" style="width:78%;background:#b45309"></div></div><span style="font-size:11px;font-weight:700;color:#b45309;min-width:30px;text-align:right">78%</span></div>
+            <div class="class-row"><span class="class-lbl">SS2A</span><div class="bar-bg" style="flex:1"><div class="bar-fill" style="width:91%;background:var(--sec)"></div></div><span style="font-size:11px;font-weight:700;color:var(--sec);min-width:30px;text-align:right">91%</span></div>
+            <div class="class-row"><span class="class-lbl">SS2B</span><div class="bar-bg" style="flex:1"><div class="bar-fill" style="width:68%;background:#b45309"></div></div><span style="font-size:11px;font-weight:700;color:#b45309;min-width:30px;text-align:right">68%</span></div>
+            <div class="class-row"><span class="class-lbl">SS3A</span><div class="bar-bg" style="flex:1"><div class="bar-fill" style="width:94%;background:var(--sec)"></div></div><span style="font-size:11px;font-weight:700;color:var(--sec);min-width:30px;text-align:right">94%</span></div>
+            <div class="class-row" style="border-bottom:none"><span class="class-lbl">SS3B</span><div class="bar-bg" style="flex:1"><div class="bar-fill" style="width:70%;background:#b45309"></div></div><span style="font-size:11px;font-weight:700;color:#b45309;min-width:30px;text-align:right">70%</span></div>
+          </div>
+        </div>
+        <div class="card" style="margin-bottom:14px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div class="card-title" style="margin-bottom:0">Recent Biometric Scans</div><span id="scanCountLbl" style="font-size:11px;color:var(--txtsub)">4 scans today</span></div>
+          <div id="dashScanFeed">
+            <div style="display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:10px;background:var(--surflo);margin-bottom:4px"><div class="av-sm av-blue">AO</div><div style="flex:1"><div style="font-size:12px;font-weight:600">Adaeze Okonkwo</div><div style="font-size:10px;color:var(--txtsub)">SS2A · Mathematics</div></div><span class="badge badge-green">Checked In</span><span style="font-size:11px;font-weight:600;color:var(--txtsub);margin-left:8px">09:34</span></div>
+            <div style="display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:10px;background:var(--surflo);margin-bottom:4px"><div class="av-sm av-blue">CE</div><div style="flex:1"><div style="font-size:12px;font-weight:600">Chukwuemeka Eze</div><div style="font-size:10px;color:var(--txtsub)">SS2A · Mathematics</div></div><span class="badge badge-green">Checked In</span><span style="font-size:11px;font-weight:600;color:var(--txtsub);margin-left:8px">09:32</span></div>
+            <div style="display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:10px;background:var(--surflo);margin-bottom:4px"><div class="av-sm av-blue">FA</div><div style="flex:1"><div style="font-size:12px;font-weight:600">Fatima Aliyu</div><div style="font-size:10px;color:var(--txtsub)">SS1A · English Language</div></div><span class="badge badge-blue">Checked Out</span><span style="font-size:11px;font-weight:600;color:var(--txtsub);margin-left:8px">09:18</span></div>
+          </div>
+        </div>
+        <div class="card" style="border-left:4px solid #7C3AED;border-radius:0 14px 14px 0">
+          <div style="font-size:13px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px"><span class="mi" style="font-size:16px;color:#7C3AED">accessibility</span>SEN — Inclusive Education (2 students)</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div style="padding:12px;border-radius:10px;border:1px solid #ddd6fe;background:#faf5ff"><div style="font-size:12px;font-weight:700;margin-bottom:4px">Babatunde Adeyemi</div><div style="font-size:10px;color:var(--txtsub);margin-bottom:6px">SS2A · ASD</div><span class="badge badge-red"><span class="mi" style="font-size:11px">warning</span>Alert today</span></div>
+            <div style="padding:12px;border-radius:10px;border:1px solid #ddd6fe;background:#faf5ff"><div style="font-size:12px;font-weight:700;margin-bottom:4px">Ibrahim Hassan</div><div style="font-size:10px;color:var(--txtsub);margin-bottom:6px">SS1C · Hearing Impairment</div><span class="badge badge-green"><span class="mi" style="font-size:11px">check</span>No alerts today</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KIOSK -->
+    <div id="page-kiosk" class="page-content">
+      <div class="kiosk-wrap">
+        <div class="kiosk-header">
+          <span class="kiosk-logo">EduCall</span>
+          <div style="background:rgba(255,255,255,.12);border-radius:20px;padding:7px 16px;font-size:12px;color:rgba(255,255,255,.85);display:flex;align-items:center;gap:7px"><span class="mi" style="font-size:14px;color:rgba(255,255,255,.6)">schedule</span>Mathematics · SS2A</div>
+          <div style="text-align:right"><div style="font-family:'Manrope',sans-serif;font-size:32px;font-weight:800;color:white;letter-spacing:-0.04em;line-height:1" id="kioskClock">09:34</div><div class="online-pill" style="margin-top:4px"><span class="online-dot"></span>Online</div></div>
+        </div>
+        <div class="kiosk-body">
+          <div style="width:100%;max-width:400px">
+            <div style="display:flex;gap:8px;justify-content:center;margin-bottom:16px">
+              <button id="modeIn" onclick="setKioskMode('in')" style="padding:8px 20px;border-radius:20px;border:none;cursor:pointer;font-size:12px;font-weight:600;background:rgba(255,255,255,.2);color:white;min-height:36px;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:6px"><span class="mi" style="font-size:14px;color:inherit">login</span>Check In</button>
+              <button id="modeOut" onclick="setKioskMode('out')" style="padding:8px 20px;border-radius:20px;border:none;cursor:pointer;font-size:12px;font-weight:600;background:rgba(255,255,255,.08);color:rgba(255,255,255,.5);min-height:36px;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:6px"><span class="mi" style="font-size:14px;color:inherit">logout</span>Check Out</button>
+            </div>
+            <div class="kiosk-card">
+              <div style="font-family:'Manrope',sans-serif;font-size:22px;font-weight:800;color:white;margin-bottom:8px" id="kioskTitle">Place Finger to Check In</div>
+              <div style="font-size:13px;color:rgba(255,255,255,.6);margin-bottom:32px">Touch the fingerprint sensor below</div>
+              <div class="fp-ring" id="fpRing" onclick="simulateScan()" tabindex="0" role="button" aria-label="Tap to scan fingerprint">
+                <span class="mi fp-icon" id="fpIcon" style="font-size:64px!important;font-variation-settings:'FILL' 1,'wght' 300,'GRAD' 0,'opsz' 48;color:rgba(255,255,255,.8)">fingerprint</span>
+              </div>
+              <div style="font-family:'Manrope',sans-serif;font-size:17px;font-weight:800;color:white;margin-bottom:6px" id="scanStatus">Ready to scan</div>
+              <div style="font-size:12px;color:rgba(255,255,255,.5);margin-bottom:16px" id="scanHint">Tap the fingerprint icon to simulate</div>
+              <div id="kioskResult" style="display:none" class="kiosk-result"></div>
+              <button class="kiosk-main-btn" onclick="simulateScan()"><span class="mi" style="font-size:16px;vertical-align:middle">fingerprint</span> Simulate Biometric Scan</button>
+            </div>
+            <div style="margin-top:16px" id="kioskFeed"></div>
+          </div>
+        </div>
+        <div style="padding:12px 28px"><button class="btn" onclick="showPage('dashboard',null)" style="background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:rgba(255,255,255,.7)"><span class="mi" style="font-size:16px">arrow_back</span>Back to Dashboard</button></div>
+      </div>
+    </div>
+
+    <!-- STUDENTS -->
+    <div id="page-students" class="page-content">
+      <div class="topbar"><div><div class="page-title">Students</div><div class="page-sub">12 enrolled · SS1–SS3</div></div><div class="topbar-actions"><input type="text" placeholder="Search…" style="width:150px;margin-bottom:0;height:34px;padding:4px 12px" oninput="filterStudents(this.value)"><button class="btn btn-primary"><span class="mi" style="font-size:16px">person_add</span>Add Student</button></div></div>
+      <div class="content">
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:#fee2e2;border-radius:10px;margin-bottom:14px;font-size:12px;color:#991b1b;font-weight:600"><span class="mi" style="font-size:18px;flex-shrink:0">warning</span>2 students without fingerprint enrolment — visit the Enrolment page</div>
+        <div class="card" style="padding:0;overflow:hidden">
+          <table><thead><tr><th>#</th><th>Student</th><th>Adm. No.</th><th>Class</th><th>Parent / Guardian</th><th>Fingerprint</th></tr></thead>
+          <tbody id="studentsTbody">
+            <tr><td style="color:var(--txtsub);font-size:11px">1</td><td><div style="display:flex;align-items:center;gap:9px"><div class="av-sm av-blue">AO</div><div><div style="font-size:12px;font-weight:600">Adaeze Okonkwo</div></div></div></td><td style="font-family:monospace;font-size:11px;color:var(--txtsub)">SCH/24/001</td><td><span class="badge badge-blue">SS2A</span></td><td style="font-size:11px">Mrs Okonkwo<br><span style="color:var(--txtsub)">+234 803 111 2222</span></td><td><span class="badge badge-green"><span class="mi" style="font-size:12px">fingerprint</span>Enrolled</span></td></tr>
+            <tr><td style="color:var(--txtsub);font-size:11px">2</td><td><div style="display:flex;align-items:center;gap:9px"><div class="av-sm av-blue">CE</div><div><div style="font-size:12px;font-weight:600">Chukwuemeka Eze</div></div></div></td><td style="font-family:monospace;font-size:11px;color:var(--txtsub)">SCH/24/002</td><td><span class="badge badge-blue">SS2A</span></td><td style="font-size:11px">Mr Eze<br><span style="color:var(--txtsub)">+234 806 333 4444</span></td><td><span class="badge badge-green"><span class="mi" style="font-size:12px">fingerprint</span>Enrolled</span></td></tr>
+            <tr><td style="color:var(--txtsub);font-size:11px">3</td><td><div style="display:flex;align-items:center;gap:9px"><div class="av-sm av-red">BA</div><div><div style="font-size:12px;font-weight:600">Babatunde Adeyemi</div><span class="badge badge-purple" style="font-size:9px">SEN</span></div></div></td><td style="font-family:monospace;font-size:11px;color:var(--txtsub)">SCH/24/004</td><td><span class="badge badge-blue">SS2A</span></td><td style="font-size:11px">Mr Adeyemi<br><span style="color:var(--txtsub)">+234 809 777 8888</span></td><td><span class="badge badge-red">Not enrolled</span></td></tr>
+            <tr><td style="color:var(--txtsub);font-size:11px">4</td><td><div style="display:flex;align-items:center;gap:9px"><div class="av-sm av-blue">FA</div><div><div style="font-size:12px;font-weight:600">Fatima Aliyu</div></div></div></td><td style="font-family:monospace;font-size:11px;color:var(--txtsub)">SCH/24/003</td><td><span class="badge badge-blue">SS1A</span></td><td style="font-size:11px">Alhaji Aliyu<br><span style="color:var(--txtsub)">+234 807 555 6666</span></td><td><span class="badge badge-green"><span class="mi" style="font-size:12px">fingerprint</span>Enrolled</span></td></tr>
+            <tr><td style="color:var(--txtsub);font-size:11px">5</td><td><div style="display:flex;align-items:center;gap:9px"><div class="av-sm av-red">IH</div><div><div style="font-size:12px;font-weight:600">Ibrahim Hassan</div><span class="badge badge-purple" style="font-size:9px">SEN</span></div></div></td><td style="font-family:monospace;font-size:11px;color:var(--txtsub)">SCH/24/010</td><td><span class="badge badge-blue">SS1C</span></td><td style="font-size:11px">Mr Hassan<br><span style="color:var(--txtsub)">+234 812 567 8901</span></td><td><span class="badge badge-red">Not enrolled</span></td></tr>
+            <tr><td style="color:var(--txtsub);font-size:11px">6</td><td><div style="display:flex;align-items:center;gap:9px"><div class="av-sm av-blue">NO</div><div><div style="font-size:12px;font-weight:600">Ngozi Obi</div></div></div></td><td style="font-family:monospace;font-size:11px;color:var(--txtsub)">SCH/24/005</td><td><span class="badge badge-blue">SS3A</span></td><td style="font-size:11px">Mrs Obi<br><span style="color:var(--txtsub)">+234 802 999 0000</span></td><td><span class="badge badge-green"><span class="mi" style="font-size:12px">fingerprint</span>Enrolled</span></td></tr>
+          </tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ENROLMENT -->
+    <div id="page-enrolment" class="page-content">
+      <div class="topbar"><div><div class="page-title">Biometric Enrolment</div><div class="page-sub">10 enrolled · 2 pending</div></div></div>
+      <div class="content">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px">
+          <div class="card" style="padding:0;overflow:hidden">
+            <div style="padding:11px 14px;background:#fee2e2;font-size:12px;font-weight:700;color:#991b1b;display:flex;align-items:center;gap:7px"><span class="mi" style="font-size:15px">fingerprint_off</span>Pending (2)</div>
+            <div style="display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid var(--surfhigh)"><div class="av-sm av-red">BA</div><div style="flex:1"><div style="font-size:12px;font-weight:600">Babatunde Adeyemi <span class="badge badge-purple" style="font-size:9px">SEN</span></div><div style="font-size:10px;color:var(--txtsub)">SCH/24/004 · SS2A</div></div><button class="btn btn-primary" style="font-size:11px;height:30px;padding:0 10px"><span class="mi" style="font-size:14px">fingerprint</span>Enrol</button></div>
+            <div style="display:flex;align-items:center;gap:10px;padding:11px 14px"><div class="av-sm av-red">IH</div><div style="flex:1"><div style="font-size:12px;font-weight:600">Ibrahim Hassan <span class="badge badge-purple" style="font-size:9px">SEN</span></div><div style="font-size:10px;color:var(--txtsub)">SCH/24/010 · SS1C</div></div><button class="btn btn-primary" style="font-size:11px;height:30px;padding:0 10px"><span class="mi" style="font-size:14px">fingerprint</span>Enrol</button></div>
+          </div>
+          <div class="card" style="padding:0;overflow:hidden">
+            <div style="padding:11px 14px;background:#dcfce7;font-size:12px;font-weight:700;color:#166534;display:flex;align-items:center;gap:7px"><span class="mi" style="font-size:15px">fingerprint</span>Enrolled (10)</div>
+            <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--surfhigh)"><div class="av-sm av-green">AO</div><div style="flex:1"><div style="font-size:12px;font-weight:600">Adaeze Okonkwo</div><div style="font-size:10px;color:var(--txtsub)">SS2A</div></div><span class="badge badge-green"><span class="mi" style="font-size:11px">check</span>Enrolled</span></div>
+            <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--surfhigh)"><div class="av-sm av-green">CE</div><div style="flex:1"><div style="font-size:12px;font-weight:600">Chukwuemeka Eze</div><div style="font-size:10px;color:var(--txtsub)">SS2A</div></div><span class="badge badge-green"><span class="mi" style="font-size:11px">check</span>Enrolled</span></div>
+            <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--surfhigh)"><div class="av-sm av-green">FA</div><div style="flex:1"><div style="font-size:12px;font-weight:600">Fatima Aliyu</div><div style="font-size:10px;color:var(--txtsub)">SS1A</div></div><span class="badge badge-green"><span class="mi" style="font-size:11px">check</span>Enrolled</span></div>
+            <div style="text-align:center;font-size:11px;color:var(--txtsub);padding:10px">+ 7 more enrolled students</div>
+          </div>
+        </div>
+        <div class="card" style="background:var(--surflo)">
+          <div style="font-size:13px;font-weight:700;margin-bottom:14px">How to enrol students</div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;text-align:center">
+            <div><div style="width:30px;height:30px;border-radius:50%;background:var(--pri);color:white;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-family:'Manrope',sans-serif">1</div><div style="font-size:11px;font-weight:700;margin-bottom:3px">Connect device</div><div style="font-size:10px;color:var(--txtsub)">Plug in SecuGen Hamster Pro 20 USB</div></div>
+            <div><div style="width:30px;height:30px;border-radius:50%;background:var(--pri);color:white;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-family:'Manrope',sans-serif">2</div><div style="font-size:11px;font-weight:700;margin-bottom:3px">Select student</div><div style="font-size:10px;color:var(--txtsub)">Click Enrol next to their name</div></div>
+            <div><div style="width:30px;height:30px;border-radius:50%;background:var(--pri);color:white;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-family:'Manrope',sans-serif">3</div><div style="font-size:11px;font-weight:700;margin-bottom:3px">Scan 3 times</div><div style="font-size:10px;color:var(--txtsub)">Student places finger on scanner</div></div>
+            <div><div style="width:30px;height:30px;border-radius:50%;background:var(--pri);color:white;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-family:'Manrope',sans-serif">4</div><div style="font-size:11px;font-weight:700;margin-bottom:3px">Confirmed</div><div style="font-size:10px;color:var(--txtsub)">Green tick — active on all kiosks</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ALERTS -->
+    <div id="page-alerts" class="page-content">
+      <div class="topbar"><div><div class="page-title">Parent Alerts</div><div class="page-sub">Automated via n8n · WhatsApp messages</div></div><div class="topbar-actions"><button class="btn btn-primary" onclick="retryAlerts()"><span class="mi" style="font-size:16px">refresh</span>Retry Pending</button></div></div>
+      <div class="content">
+        <div class="stat-grid">
+          <div class="stat-card"><span class="chip chip-green">Sent</span><div class="stat-val" id="sentCount">3</div><div class="stat-lbl">Sent alerts</div></div>
+          <div class="stat-card"><span class="chip chip-amber">Pending</span><div class="stat-val" id="pendingCount">2</div><div class="stat-lbl">Pending</div></div>
+          <div class="stat-card"><span class="chip" style="background:#ede9fe;color:#5b21b6">SEN</span><div class="stat-val">2</div><div class="stat-lbl">SEN equipment</div></div>
+          <div class="stat-card"><span class="chip chip-red">Late</span><div class="stat-val">1</div><div class="stat-lbl">Late arrivals</div></div>
+        </div>
+        <div class="card" style="margin-bottom:14px;background:var(--surflo)">
+          <div style="font-size:13px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:7px"><span class="mi" style="font-size:16px;color:#25D366">chat</span>What parents receive — WhatsApp examples</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div style="border-radius:12px;overflow:hidden;border:1px solid var(--outline-var)"><div style="padding:8px 12px;background:#C0392B;font-size:11px;font-weight:700;color:white">Absence alert</div><div style="padding:10px;background:#ECE5DD"><div style="background:white;border-radius:8px;padding:10px 12px;font-size:10px;line-height:1.7;color:#111">Good afternoon Mrs Okonkwo,<br><br>Your child <b>Adaeze Okonkwo</b> (SS2A) was not present for Mathematics — Period 3 today.<br><br>EduCall – Sunshine Secondary School</div><div style="text-align:right;font-size:9px;color:#667781;margin-top:4px">✓✓ Delivered</div></div></div>
+            <div style="border-radius:12px;overflow:hidden;border:1px solid var(--outline-var)"><div style="padding:8px 12px;background:#7C3AED;font-size:11px;font-weight:700;color:white">SEN equipment alert</div><div style="padding:10px;background:#ECE5DD"><div style="background:white;border-radius:8px;padding:10px 12px;font-size:10px;line-height:1.7;color:#111">Dear Mr Adeyemi,<br><br><b>Babatunde Adeyemi</b> (SS2A) arrived without:<br>• Communication board<br><br>EduCall – Sunshine Secondary School</div><div style="text-align:right;font-size:9px;color:#667781;margin-top:4px">✓✓ Delivered</div></div></div>
+          </div>
+        </div>
+        <div class="card" style="padding:0;overflow:hidden">
+          <div style="padding:14px 16px;border-bottom:1px solid var(--outline-var);font-family:'Manrope',sans-serif;font-size:15px;font-weight:700">All Parent Alerts</div>
+          <div id="alertsList">
+            <div class="alert-row"><div class="alert-dot" style="background:#991b1b"></div><div style="flex:1"><div style="font-size:12px;font-weight:600">Babatunde Adeyemi missed Mathematics — SS2A</div><div style="font-size:10px;color:var(--txtsub);margin-top:2px">Absent · 2026-06-10 · <span style="color:#991b1b;font-weight:600">pending</span></div></div><span class="badge badge-red">Absent</span></div>
+            <div class="alert-row"><div class="alert-dot" style="background:#b45309"></div><div style="flex:1"><div style="font-size:12px;font-weight:600">Adaeze Okonkwo late for Physics — SS2A</div><div style="font-size:10px;color:var(--txtsub);margin-top:2px">Late arrival · 2026-06-12 · <span style="color:#991b1b;font-weight:600">pending</span></div></div><span class="badge badge-amber">Late</span></div>
+            <div class="alert-row"><div class="alert-dot" style="background:var(--sec)"></div><div style="flex:1"><div style="font-size:12px;font-weight:600">Ibrahim Hassan — missing hearing aid at SS1C</div><div style="font-size:10px;color:var(--txtsub);margin-top:2px">SEN equipment · 2026-06-11 · <span style="color:var(--sec);font-weight:600">sent</span></div></div><span class="badge badge-purple">Equipment</span></div>
+            <div class="alert-row"><div class="alert-dot" style="background:var(--sec)"></div><div style="flex:1"><div style="font-size:12px;font-weight:600">Babatunde Adeyemi — missing communication board</div><div style="font-size:10px;color:var(--txtsub);margin-top:2px">SEN equipment · 2026-06-11 · <span style="color:var(--sec);font-weight:600">sent</span></div></div><span class="badge badge-purple">Equipment</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REPORTS -->
+    <div id="page-reports" class="page-content">
+      <div class="topbar"><div><div class="page-title">Reports & Analytics</div><div class="page-sub">Attendance summaries · CSV export</div></div><div class="topbar-actions"><button class="btn btn-primary"><span class="mi" style="font-size:16px">download</span>Export CSV</button></div></div>
+      <div class="content">
+        <div class="stat-grid" style="margin-bottom:16px">
+          <div class="stat-card"><span class="chip chip-green">School avg</span><div class="stat-val">82%</div><div class="stat-lbl">Overall attendance</div></div>
+          <div class="stat-card"><span class="chip chip-blue">Active</span><div class="stat-val">12</div><div class="stat-lbl">Students tracked</div></div>
+          <div class="stat-card"><span class="chip chip-green">Top class</span><div class="stat-val">SS3A</div><div class="stat-lbl">Best — 94%</div></div>
+          <div class="stat-card"><span class="chip chip-red">At risk</span><div class="stat-val">3</div><div class="stat-lbl">Below 75% threshold</div></div>
+        </div>
+        <div class="two-col">
+          <div class="card">
+            <div class="card-title">Attendance by Class</div>
+            <div class="class-row"><span class="class-lbl">SS1A</span><div class="bar-bg" style="flex:1"><div class="bar-fill" style="width:82%;background:var(--sec)"></div></div><span style="font-size:11px;font-weight:700;color:var(--sec);min-width:30px;text-align:right">82%</span><span class="badge badge-green" style="margin-left:6px">Good</span></div>
+            <div class="class-row"><span class="class-lbl">SS1B</span><div class="bar-bg" style="flex:1"><div class="bar-fill" style="width:78%;background:#b45309"></div></div><span style="font-size:11px;font-weight:700;color:#b45309;min-width:30px;text-align:right">78%</span><span class="badge badge-amber" style="margin-left:6px">OK</span></div>
+            <div class="class-row"><span class="class-lbl">SS2A</span><div class="bar-bg" style="flex:1"><div class="bar-fill" style="width:91%;background:var(--sec)"></div></div><span style="font-size:11px;font-weight:700;color:var(--sec);min-width:30px;text-align:right">91%</span><span class="badge badge-green" style="margin-left:6px">Good</span></div>
+            <div class="class-row"><span class="class-lbl">SS2B</span><div class="bar-bg" style="flex:1"><div class="bar-fill" style="width:68%;background:#b45309"></div></div><span style="font-size:11px;font-weight:700;color:#b45309;min-width:30px;text-align:right">68%</span><span class="badge badge-amber" style="margin-left:6px">OK</span></div>
+            <div class="class-row"><span class="class-lbl">SS3A</span><div class="bar-bg" style="flex:1"><div class="bar-fill" style="width:94%;background:var(--sec)"></div></div><span style="font-size:11px;font-weight:700;color:var(--sec);min-width:30px;text-align:right">94%</span><span class="badge badge-green" style="margin-left:6px">Good</span></div>
+            <div class="class-row" style="border-bottom:none"><span class="class-lbl">SS3B</span><div class="bar-bg" style="flex:1"><div class="bar-fill" style="width:64%;background:#b45309"></div></div><span style="font-size:11px;font-weight:700;color:#b45309;min-width:30px;text-align:right">64%</span><span class="badge badge-red" style="margin-left:6px">Low</span></div>
+          </div>
+          <div class="card">
+            <div class="card-title">At-Risk Students (below 75%)</div>
+            <div style="padding:10px 14px;background:#fee2e2;border-radius:10px;font-size:12px;color:#991b1b;font-weight:500;margin-bottom:12px">3 students need intervention. WhatsApp alerts sent for missed sessions.</div>
+            <div style="display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:10px;background:var(--surflo);margin-bottom:4px"><div class="av-sm av-red">BA</div><div style="flex:1"><div style="font-size:12px;font-weight:600">Babatunde Adeyemi</div><div style="font-size:10px;color:var(--txtsub)">SS2A</div></div><div style="width:80px"><div class="bar-bg"><div class="bar-fill" style="width:61%;background:#991b1b"></div></div></div><span class="badge badge-red" style="margin-left:6px">61%</span></div>
+            <div style="display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:10px;background:var(--surflo);margin-bottom:4px"><div class="av-sm av-red">IH</div><div style="flex:1"><div style="font-size:12px;font-weight:600">Ibrahim Hassan</div><div style="font-size:10px;color:var(--txtsub)">SS1C</div></div><div style="width:80px"><div class="bar-bg"><div class="bar-fill" style="width:67%;background:#b45309"></div></div></div><span class="badge badge-red" style="margin-left:6px">67%</span></div>
+            <div style="display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:10px;background:var(--surflo)"><div class="av-sm av-red">MO</div><div style="flex:1"><div style="font-size:12px;font-weight:600">Mohammed Okafor</div><div style="font-size:10px;color:var(--txtsub)">SS1B</div></div><div style="width:80px"><div class="bar-bg"><div class="bar-fill" style="width:72%;background:#b45309"></div></div></div><span class="badge badge-amber" style="margin-left:6px">72%</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div id="page-settings" class="page-content">
+      <div class="topbar"><div><div class="page-title">Settings</div><div class="page-sub">n8n webhooks · device config · school details</div></div><div class="topbar-actions"><button class="btn btn-primary" id="saveBtn" onclick="saveSettings()"><span class="mi" style="font-size:16px">save</span>Save</button></div></div>
+      <div class="content">
+        <div class="settings-grid">
+          <div>
+            <div class="card" style="margin-bottom:14px">
+              <div class="card-title">School Details</div>
+              <label class="field-label">School Name</label><input type="text" value="Sunshine Secondary School, Lagos">
+              <label class="field-label">Academic Year</label><input type="text" value="2025/2026">
+            </div>
+            <div class="card" style="margin-bottom:14px">
+              <div class="card-title">Biometric Device</div>
+              <div style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--surflo);border-radius:10px;margin-bottom:12px"><span class="mi" style="font-size:28px;color:var(--txtsub)">fingerprint</span><div style="flex:1"><div style="font-size:13px;font-weight:600">Fingerprint Scanner</div><div style="font-size:11px;color:var(--txtsub)">SecuGen Hamster Pro 20 (recommended)</div></div><span class="badge badge-red">Not connected</span></div>
+              <button class="btn" style="width:100%;justify-content:center" onclick="runPhase0()"><span class="mi" style="font-size:16px">memory</span>Run Phase 0 Hardware Validation</button>
+            </div>
+            <div class="card" style="border-left:4px solid #FFC000;border-radius:0 14px 14px 0">
+              <div style="font-size:13px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px"><span class="mi" style="font-size:16px;color:#b45309">developer_board</span>Phase 0 — Hardware Validation</div>
+              <div id="p0-1" class="phase0-row"><span class="mi" style="font-size:16px;color:var(--txtsub)">check_box_outline_blank</span>SecuGen Hamster Pro 20 — fingerprint scan test</div>
+              <div id="p0-2" class="phase0-row"><span class="mi" style="font-size:16px;color:var(--txtsub)">check_box_outline_blank</span>USB driver installation on Windows 11</div>
+              <div id="p0-3" class="phase0-row"><span class="mi" style="font-size:16px;color:var(--txtsub)">check_box_outline_blank</span>SDK API response time (&lt;500ms target)</div>
+              <div id="p0-4" class="phase0-row"><span class="mi" style="font-size:16px;color:var(--txtsub)">check_box_outline_blank</span>Offline queue — SQLite → sync test</div>
+            </div>
+          </div>
+          <div>
+            <div class="card">
+              <div class="card-title">n8n Webhook Configuration</div>
+              <div style="font-size:11px;color:var(--txtsub);margin-bottom:14px">Paste your n8n webhook URLs to activate parent alerts and Neon DB sync</div>
+              <div style="background:var(--surflo);border-radius:10px;padding:12px;margin-bottom:14px">
+                <div style="font-size:10px;font-weight:700;color:var(--txtsub);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Taiwo's Stack</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:11px">
+                  <div style="padding:5px 8px;background:white;border-radius:7px;border:1px solid var(--outline-var)"><b>Backend:</b> <span style="color:var(--txtsub)">NestJS</span></div>
+                  <div style="padding:5px 8px;background:white;border-radius:7px;border:1px solid var(--outline-var)"><b>Scanner:</b> <span style="color:var(--txtsub)">SecuGen Pro 20</span></div>
+                  <div style="padding:5px 8px;background:white;border-radius:7px;border:1px solid var(--outline-var)"><b>WhatsApp:</b> <span style="color:var(--txtsub)">Meta Cloud API</span></div>
+                  <div style="padding:5px 8px;background:white;border-radius:7px;border:1px solid var(--outline-var)"><b>Kiosk app:</b> <span style="color:var(--txtsub)">Tauri v2</span></div>
+                  <div style="padding:5px 8px;background:white;border-radius:7px;border:1px solid var(--outline-var)"><b>Offline:</b> <span style="color:var(--txtsub)">SQLite queue</span></div>
+                  <div style="padding:5px 8px;background:white;border-radius:7px;border:1px solid var(--outline-var)"><b>Database:</b> <span style="color:var(--txtsub)">Neon PostgreSQL</span></div>
+                </div>
+              </div>
+              <div style="font-size:10px;font-weight:700;color:var(--txtsub);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Alert Webhooks</div>
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="font-size:11px;font-weight:600;width:90px;flex-shrink:0;color:var(--txtsub)">Scan webhook</span><input class="webhook-url" type="text" placeholder="https://your.n8n.cloud/webhook/educall-scan"></div>
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="font-size:11px;font-weight:600;width:90px;flex-shrink:0;color:var(--txtsub)">Absence</span><input class="webhook-url" type="text" placeholder="https://your.n8n.cloud/webhook/educall-absent"></div>
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px"><span style="font-size:11px;font-weight:600;width:90px;flex-shrink:0;color:var(--txtsub)">DB load</span><input class="webhook-url" type="text" placeholder="https://your.n8n.cloud/webhook/educall-db-load"></div>
+              <div style="display:flex;gap:8px"><button class="btn" style="flex:1;justify-content:center;font-size:11px">Test connection</button><button class="btn btn-primary" onclick="saveSettings()" style="flex:1;justify-content:center;font-size:11px"><span class="mi" style="font-size:14px">save</span>Save webhooks</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ATTENDANCE -->
+    <div id="page-attendance" class="page-content">
+      <div class="topbar"><div><div class="page-title">Biometric Attendance</div><div class="page-sub">Per-subject check-in & check-out</div></div><div class="topbar-actions"><select style="width:90px;margin-bottom:0;height:34px"><option>SS2A</option><option>SS1A</option><option>SS3A</option></select><select style="width:140px;margin-bottom:0;height:34px"><option>Mathematics</option><option>Physics</option><option>English Language</option></select><button class="btn btn-primary" onclick="showPage('kiosk',null)"><span class="mi" style="font-size:16px">fingerprint</span>Open Kiosk</button></div></div>
+      <div class="content">
+        <div class="stat-grid" style="margin-bottom:16px">
+          <div class="stat-card"><span class="chip chip-green">In</span><div class="stat-val" id="attIn">8</div><div class="stat-lbl">Checked in today</div></div>
+          <div class="stat-card"><span class="chip chip-blue">Out</span><div class="stat-val" id="attOut">3</div><div class="stat-lbl">Checked out</div></div>
+          <div class="stat-card"><span class="chip chip-red">Absent</span><div class="stat-val" id="attAbsent">4</div><div class="stat-lbl">Not checked in</div></div>
+          <div class="stat-card"><span class="chip chip-blue">Rate</span><div class="stat-val" id="attRate">67%</div><div class="stat-lbl">Attendance rate</div></div>
+        </div>
+        <div class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div class="card-title" style="margin-bottom:0">SS2A · Mathematics — Today</div><div style="display:flex;gap:8px"><button class="btn" onclick="markAll()">Mark All In</button><button class="btn"><span class="mi" style="font-size:16px">download</span>CSV</button></div></div>
+          <div id="attendanceList">
+            <div style="display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:10px;background:var(--surflo);margin-bottom:4px"><span style="font-size:11px;color:var(--txtsub);width:18px">1</span><div class="av-sm av-blue">AO</div><div style="flex:1"><div style="font-size:12px;font-weight:600">Adaeze Okonkwo</div><div style="font-size:10px;color:var(--txtsub)">SCH/24/001</div></div><span class="badge badge-green">In — 09:34</span><button class="btn" onclick="markOut(this)" style="height:28px;font-size:11px;padding:0 10px;margin-left:8px">Out</button></div>
+            <div id="att-2" style="display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:10px;background:var(--surflo);margin-bottom:4px"><span style="font-size:11px;color:var(--txtsub);width:18px">2</span><div class="av-sm av-blue">CE</div><div style="flex:1"><div style="font-size:12px;font-weight:600">Chukwuemeka Eze</div><div style="font-size:10px;color:var(--txtsub)">SCH/24/002</div></div><span class="badge badge-red" id="att-2-badge">Absent</span><button class="btn btn-primary" onclick="markIn('att-2')" id="att-2-btn" style="height:28px;font-size:11px;padding:0 10px;margin-left:8px">In</button></div>
+            <div id="att-3" style="display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:10px;background:var(--surflo);margin-bottom:4px"><span style="font-size:11px;color:var(--txtsub);width:18px">3</span><div class="av-sm av-red">BA</div><div style="flex:1"><div style="font-size:12px;font-weight:600">Babatunde Adeyemi <span class="badge badge-purple" style="font-size:9px">SEN</span></div><div style="font-size:10px;color:#991b1b">No fingerprint — manual mark required</div></div><span class="badge badge-red" id="att-3-badge">Absent</span><button class="btn btn-primary" onclick="markIn('att-3')" id="att-3-btn" style="height:28px;font-size:11px;padding:0 10px;margin-left:8px">In</button></div>
+            <div style="display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:10px;background:var(--surflo)"><span style="font-size:11px;color:var(--txtsub);width:18px">4</span><div class="av-sm av-blue">FA</div><div style="flex:1"><div style="font-size:12px;font-weight:600">Fatima Aliyu</div><div style="font-size:10px;color:var(--txtsub)">SCH/24/003</div></div><span class="badge badge-blue">Out — 10:12</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEACHERS -->
+    <div id="page-teachers" class="page-content">
+      <div class="topbar"><div><div class="page-title">Teachers</div><div class="page-sub">5 registered</div></div><div class="topbar-actions"><button class="btn btn-primary"><span class="mi" style="font-size:16px">person_add</span>Add Teacher</button></div></div>
+      <div class="content">
+        <div class="card" style="padding:0;overflow:hidden">
+          <table><thead><tr><th>#</th><th>Teacher</th><th>Subjects</th><th>Classes</th><th>Role</th><th>Login Access</th></tr></thead>
+          <tbody>
+            <tr><td style="color:var(--txtsub);font-size:11px">1</td><td><div style="display:flex;align-items:center;gap:9px"><div class="av-sm av-blue" style="background:#dcfce7;color:#166534">MA</div><div><div style="font-size:12px;font-weight:600">Mr Adeyemi</div><div style="font-size:10px;color:var(--txtsub)">adeyemi@school.ng</div></div></div></td><td><span class="badge badge-blue" style="font-size:9px;margin-right:3px">Maths</span><span class="badge badge-blue" style="font-size:9px">Further Maths</span></td><td><span class="badge badge-green" style="font-size:9px;margin-right:3px">SS2A</span><span class="badge badge-green" style="font-size:9px">SS3A</span></td><td><span class="badge badge-amber">Teacher</span></td><td><span class="badge badge-green">Has login</span></td></tr>
+            <tr><td style="color:var(--txtsub);font-size:11px">2</td><td><div style="display:flex;align-items:center;gap:9px"><div class="av-sm av-blue" style="background:#dcfce7;color:#166534">MO</div><div><div style="font-size:12px;font-weight:600">Mrs Okonkwo</div><div style="font-size:10px;color:var(--txtsub)">okonkwo@school.ng</div></div></div></td><td><span class="badge badge-blue" style="font-size:9px;margin-right:3px">English</span><span class="badge badge-blue" style="font-size:9px">Literature</span></td><td><span class="badge badge-green" style="font-size:9px;margin-right:3px">SS2A</span><span class="badge badge-green" style="font-size:9px">SS1C</span></td><td><span class="badge badge-amber">Teacher</span></td><td><span class="badge badge-green">Has login</span></td></tr>
+            <tr><td style="color:var(--txtsub);font-size:11px">3</td><td><div style="display:flex;align-items:center;gap:9px"><div class="av-sm av-blue" style="background:#dcfce7;color:#166534">MN</div><div><div style="font-size:12px;font-weight:600">Mr Nwosu</div><div style="font-size:10px;color:var(--txtsub)">nwosu@school.ng</div></div></div></td><td><span class="badge badge-blue" style="font-size:9px;margin-right:3px">Physics</span><span class="badge badge-blue" style="font-size:9px">Comp. Sci.</span></td><td><span class="badge badge-green" style="font-size:9px;margin-right:3px">SS1A</span><span class="badge badge-green" style="font-size:9px">SS2C</span></td><td><span class="badge badge-amber">Teacher</span></td><td><span class="badge badge-green">Has login</span></td></tr>
+            <tr><td style="color:var(--txtsub);font-size:11px">4</td><td><div style="display:flex;align-items:center;gap:9px"><div class="av-sm av-blue" style="background:#dcfce7;color:#166534">MA</div><div><div style="font-size:12px;font-weight:600">Mrs Aliyu</div><div style="font-size:10px;color:var(--txtsub)">aliyu@school.ng</div></div></div></td><td><span class="badge badge-blue" style="font-size:9px">Chemistry</span></td><td><span class="badge badge-green" style="font-size:9px">SS3A</span></td><td><span class="badge badge-purple">HoD</span></td><td><span class="badge badge-green">Has login</span></td></tr>
+            <tr><td style="color:var(--txtsub);font-size:11px">5</td><td><div style="display:flex;align-items:center;gap:9px"><div class="av-sm av-red">MB</div><div><div style="font-size:12px;font-weight:600">Mr Bakare</div><div style="font-size:10px;color:var(--txtsub)">bakare@school.ng</div></div></div></td><td><span class="badge badge-blue" style="font-size:9px">Biology</span></td><td><span class="badge badge-green" style="font-size:9px">SS2B</span></td><td><span class="badge badge-amber">Teacher</span></td><td><span class="badge badge-red">No login</span></td></tr>
+          </tbody></table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+var kioskMode='in';
+var pendingAlerts=2;
+var scanNames=['Adaeze Okonkwo','Chukwuemeka Eze','Fatima Aliyu','Ngozi Obi','Emeka Nwosu','Blessing Udoh','Tunde Bakare'];
+var scanInits=['AO','CE','FA','NO','EN','BU','TB'];
+var scanCls=['SS2A','SS2A','SS1A','SS3A','SS1B','SS2B','SS3A'];
+var kioskScans=[];
+var atIn=8,atAbsent=4;
+
+function showPage(id,btn){
+  document.querySelectorAll('.page-content').forEach(function(p){p.classList.remove('visible')});
+  document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active')});
+  var page=document.getElementById('page-'+id);
+  if(page) page.classList.add('visible');
+  if(btn) btn.classList.add('active');
+  if(id==='kiosk') updateClock();
+}
+
+function setKioskMode(mode){
+  kioskMode=mode;
+  var inBtn=document.getElementById('modeIn');
+  var outBtn=document.getElementById('modeOut');
+  inBtn.style.background=mode==='in'?'rgba(255,255,255,.2)':'rgba(255,255,255,.08)';
+  inBtn.style.color=mode==='in'?'white':'rgba(255,255,255,.5)';
+  outBtn.style.background=mode==='out'?'rgba(255,255,255,.2)':'rgba(255,255,255,.08)';
+  outBtn.style.color=mode==='out'?'white':'rgba(255,255,255,.5)';
+  document.getElementById('kioskTitle').textContent=mode==='in'?'Place Finger to Check In':'Place Finger to Check Out';
+  document.getElementById('kioskResult').style.display='none';
+}
+
+function simulateScan(){
+  var ring=document.getElementById('fpRing');
+  var icon=document.getElementById('fpIcon');
+  var status=document.getElementById('scanStatus');
+  var hint=document.getElementById('scanHint');
+  var result=document.getElementById('kioskResult');
+  ring.style.border='2px solid rgba(255,255,255,.6)';
+  ring.style.background='rgba(255,255,255,.12)';
+  icon.classList.add('scanning-ring');
+  status.textContent='Scanning fingerprint…';
+  hint.textContent='Please hold still';
+  result.style.display='none';
+  setTimeout(function(){
+    icon.classList.remove('scanning-ring');
+    var success=Math.random()>0.08;
+    if(success){
+      var idx=Math.floor(Math.random()*scanNames.length);
+      var name=scanNames[idx];var init=scanInits[idx];var cls=scanCls[idx];
+      var now=new Date();
+      var t=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+      icon.style.color='#a0f399';
+      ring.style.border='2px solid rgba(160,243,153,.5)';
+      ring.style.background='rgba(160,243,153,.1)';
+      status.textContent='✓ Welcome, '+name.split(' ')[0]+'!';
+      hint.textContent=kioskMode==='in'?'Check-in recorded':'Check-out recorded';
+      result.style.display='flex';
+      result.innerHTML='<div class="result-av">'+init+'</div><div><div style="font-size:14px;font-weight:700;color:#111">'+name+'</div><div style="font-size:11px;color:#555;margin-top:2px">'+cls+' · Mathematics</div></div><div style="margin-left:auto;text-align:right"><div style="font-family:Manrope,sans-serif;font-size:22px;font-weight:800;color:var(--pri);letter-spacing:-0.02em">'+t+'</div><div style="font-size:10px;color:#999;text-transform:uppercase;letter-spacing:0.05em">'+(kioskMode==='in'?'Checked In':'Checked Out')+'</div></div>';
+      kioskScans.unshift({init:init,name:name,cls:cls,time:t,type:kioskMode});
+      updateKioskFeed();
+      addDashScan(init,name,cls,t,kioskMode);
+    } else {
+      icon.style.color='#ffa098';ring.style.border='2px solid rgba(255,160,152,.4)';
+      status.textContent='Fingerprint not recognised';hint.textContent='Please try again or see your teacher';
+    }
+    setTimeout(function(){
+      status.textContent='Ready to scan';hint.textContent='Tap the fingerprint icon to simulate';
+      icon.style.color='rgba(255,255,255,.8)';ring.style.border='2px solid rgba(255,255,255,.3)';ring.style.background='rgba(255,255,255,.08)';
+    },3200);
+  },1600);
+}
+
+function updateKioskFeed(){
+  var feed=document.getElementById('kioskFeed');
+  if(!feed)return;
+  var html='<div style="font-size:10px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Recent Scans</div>';
+  kioskScans.slice(0,5).forEach(function(s){
+    var col=s.type==='in'?'rgba(160,243,153,.2)':'rgba(163,201,255,.2)';
+    var tc=s.type==='in'?'#a0f399':'#a3c9ff';
+    html+='<div style="display:flex;align-items:center;gap:9px;padding:7px 11px;border-radius:9px;background:rgba(255,255,255,.07);margin-bottom:4px">';
+    html+='<div style="width:28px;height:28px;border-radius:7px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+s.init+'</div>';
+    html+='<div style="flex:1;font-size:11px;color:rgba(255,255,255,.8);font-weight:600">'+s.name+'</div>';
+    html+='<span style="font-size:9px;font-weight:700;padding:2px 7px;border-radius:9px;background:'+col+';color:'+tc+'">'+(s.type==='in'?'IN':'OUT')+'</span>';
+    html+='<span style="font-size:10px;color:rgba(255,255,255,.4)">'+s.time+'</span></div>';
+  });
+  feed.innerHTML=html;
+}
+
+function addDashScan(init,name,cls,t,type){
+  var feed=document.getElementById('dashScanFeed');
+  if(!feed)return;
+  var badge=type==='in'?'<span class="badge badge-green">Checked In</span>':'<span class="badge badge-blue">Checked Out</span>';
+  var row=document.createElement('div');
+  row.style.cssText='display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:10px;background:var(--surflo);margin-bottom:4px;animation:slideUp .3s ease-out';
+  row.innerHTML='<div class="av-sm av-blue">'+init+'</div><div style="flex:1"><div style="font-size:12px;font-weight:600">'+name+'</div><div style="font-size:10px;color:var(--txtsub)">'+cls+' · Mathematics</div></div>'+badge+'<span style="font-size:11px;font-weight:600;color:var(--txtsub);margin-left:8px">'+t+'</span>';
+  feed.insertBefore(row,feed.firstChild);
+  var count=feed.querySelectorAll('div[style*="margin-bottom:4px"]').length;
+  var lbl=document.getElementById('scanCountLbl');
+  if(lbl)lbl.textContent=count+' scans today';
+}
+
+function markIn(id){
+  var badge=document.getElementById(id+'-badge');
+  var btn=document.getElementById(id+'-btn');
+  var now=new Date();var t=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+  if(badge){badge.className='badge badge-green';badge.textContent='In — '+t}
+  if(btn){btn.textContent='Out';btn.className='btn';btn.onclick=function(){markOut(btn)}}
+  atIn++;atAbsent=Math.max(0,atAbsent-1);
+  document.getElementById('attIn').textContent=atIn;
+  document.getElementById('attAbsent').textContent=atAbsent;
+  document.getElementById('attRate').textContent=Math.round(atIn/(atIn+atAbsent)*100)+'%';
+}
+
+function markOut(btn){
+  var now=new Date();var t=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+  var row=btn.closest('[id^=att-]');
+  if(row){var badge=row.querySelector('.badge');if(badge){badge.className='badge badge-blue';badge.textContent='Out — '+t}}
+  btn.style.display='none';
+  document.getElementById('attOut').textContent=parseInt(document.getElementById('attOut').textContent)+1;
+}
+
+function markAll(){markIn('att-2');markIn('att-3')}
+
+function filterStudents(q){
+  document.querySelectorAll('#studentsTbody tr').forEach(function(r){
+    r.style.display=!q||r.textContent.toLowerCase().includes(q.toLowerCase())?'':'none';
+  });
+}
+
+function retryAlerts(){
+  pendingAlerts=0;
+  document.getElementById('alertBadge').style.display='none';
+  document.getElementById('alertStat').textContent='0';
+  document.getElementById('pendingCount').textContent='0';
+  document.getElementById('sentCount').textContent='5';
+  document.querySelectorAll('#alertsList .alert-row').forEach(function(r){
+    var dot=r.querySelector('.alert-dot');
+    var meta=r.querySelector('[style*="991b1b"]');
+    if(dot)dot.style.background='var(--sec)';
+    if(meta){meta.style.color='var(--sec)';meta.textContent='sent'}
+  });
+}
+
+var phase0running=false;
+function runPhase0(){
+  if(phase0running)return;phase0running=true;
+  ['p0-1','p0-2','p0-3','p0-4'].forEach(function(id,i){
+    setTimeout(function(){
+      var row=document.getElementById(id);if(!row)return;
+      var icon=row.querySelector('.mi');if(!icon)return;
+      icon.textContent='check_box';icon.style.color='var(--sec)';
+    },i*700);
+  });
+}
+
+function saveSettings(){
+  var btn=document.getElementById('saveBtn');
+  if(!btn)return;
+  var orig=btn.innerHTML;
+  btn.innerHTML='<span class="mi" style="font-size:16px">check</span>Saved!';
+  btn.style.background='var(--sec)';
+  setTimeout(function(){btn.innerHTML=orig;btn.style.background=''}, 2000);
+}
+
+function updateClock(){
+  var el=document.getElementById('kioskClock');if(!el)return;
+  var now=new Date();
+  el.textContent=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+}
+setInterval(updateClock,30000);
+updateClock();
+</script>
+</body>
+</html>
