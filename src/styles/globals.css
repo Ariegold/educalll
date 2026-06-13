@@ -1,0 +1,167 @@
+/*
+ * EduCall — Global Design System
+ * ─────────────────────────────────────────────────────────────
+ * Tokens follow Material Design 3 tonal surface model.
+ * Spacing follows 8pt grid (iOS HIG + Material): 4, 8, 12, 16, 24, 32, 40, 48.
+ * iOS safe zones: --status-bar-h (44px), --nav-h (108px), --tap (44px).
+ * All interactive elements must meet --tap minimum for WCAG 2.5.8.
+ *
+ * Colour palette:
+ *   Primary    #003461  — deep navy (EduCall brand)
+ *   Secondary  #1b6d24  — success green (attendance confirmed)
+ *   Tertiary   #6e0009  — alert red (absent / missing)
+ *   Surface    #f8f9ff  — cool white (background)
+ *
+ * Developer note: Add new tokens here, never hardcode hex values in components.
+ */
+
+/* ── RESET ─────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; }
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--surface);
+  color: var(--on-surface);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* ── DESIGN TOKENS ─────────────────────────────────────────── */
+:root {
+  /* Brand colours */
+  --primary:              #003461;
+  --primary-container:    #004b87;
+  --on-primary:           #ffffff;
+  --on-primary-container: #8abcff;
+  --surface-tint:         #27609d;
+
+  /* Surfaces */
+  --surface:                  #f8f9ff;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low:    #f0f4fd;
+  --surface-container:        #eaeef7;
+  --surface-container-high:   #e4e8f1;
+  --surface-container-highest:#dee3eb;
+
+  /* Text */
+  --on-surface:         #171c22;
+  --on-surface-variant: #424750;
+  --outline:            #727781;
+  --outline-variant:    #c2c6d1;
+
+  /* Status colours */
+  --secondary:             #1b6d24;
+  --secondary-container:   #a0f399;
+  --on-secondary-container:#217128;
+  --tertiary:              #6e0009;
+  --tertiary-container:    #990011;
+  --on-tertiary-container: #ffa098;
+  --error:                 #ba1a1a;
+  --error-container:       #ffdad6;
+  --inverse-surface:       #2c3137;
+
+  /* Brand gradient — used on primary actions + logo */
+  --grad-primary: linear-gradient(135deg, #003461 0%, #004b87 100%);
+
+  /* Typography */
+  --font-headline: 'Manrope', sans-serif;
+  --font-body:     'Inter', sans-serif;
+
+  /* 8pt spacing grid */
+  --sp-4:   4px;
+  --sp-8:   8px;
+  --sp-12: 12px;
+  --sp-16: 16px;
+  --sp-24: 24px;
+  --sp-32: 32px;
+  --sp-40: 40px;
+  --sp-48: 48px;
+  --sp-64: 64px;
+  --sp-80: 80px;
+
+  /* iOS HIG safe zones */
+  --status-bar-h:  44px;   /* nothing above this */
+  --nav-h:        108px;   /* status(44) + back-btn tap-target(44) + gap(16) + pad(4) */
+  --tap:           44px;   /* minimum tap target — WCAG 2.5.8 */
+  --h-margin:      16px;   /* horizontal screen margin */
+  --card-pad:      16px;   /* internal card padding */
+  --keyboard-safe: 106px;  /* clearance above bottom button (iOS keyboard) */
+  --icon-gap:      24px;   /* icon → label distance */
+  --title-gap:      8px;   /* title → description gap */
+  --card-above-gap:40px;   /* gap between text area and card section */
+
+  /* Shadows */
+  --shadow-sm:  0 2px 8px rgba(23,28,34,0.06);
+  --shadow-md:  0 4px 16px rgba(23,28,34,0.08);
+  --shadow-lg:  0 12px 32px rgba(23,28,34,0.10);
+  --shadow-btn: 0 4px 14px rgba(0,52,97,0.22);
+
+  /* Border radius */
+  --radius-sm:  8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+
+  /* Sidebar width */
+  --sidebar-w: 256px;
+  --topbar-h:   64px;
+}
+
+/* ── MATERIAL SYMBOLS ICON ─────────────────────────────────── */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  font-size: 20px;
+  line-height: 1;
+  display: inline-block;
+  vertical-align: middle;
+  user-select: none;
+}
+
+/* ── FOCUS VISIBLE (accessibility) ────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--surface-tint);
+  outline-offset: 2px;
+}
+
+/* ── ANIMATIONS ────────────────────────────────────────────── */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes pulse {
+  0%   { opacity: 0.6; transform: scale(1); }
+  100% { opacity: 0;   transform: scale(1.3); }
+}
+
+.animate-slide-up { animation: slideUp 0.3s ease-out; }
+.animate-fade-in  { animation: fadeIn  0.2s ease-out; }
+
+/* ── SCROLLBAR ─────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--outline-variant); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--outline); }
+
+/* ── UTILITY CLASSES ───────────────────────────────────────── */
+.text-muted  { color: var(--outline); }
+.text-sm     { font-size: 12px; }
+.text-xs     { font-size: 11px; }
+.fw-600      { font-weight: 600; }
+.fw-700      { font-weight: 700; }
+.fw-800      { font-weight: 800; }
+.font-mono   { font-family: 'Courier New', monospace; }
+.font-head   { font-family: var(--font-headline); }
+.truncate    { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ── RESPONSIVE HELPERS ────────────────────────────────────── */
+@media (max-width: 768px) {
+  :root { --h-margin: 16px; }
+}
