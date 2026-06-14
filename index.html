@@ -276,7 +276,7 @@ tr:hover td{background:var(--surf-hi)}
     </div>
 
     <!-- Role tabs -->
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px">
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:20px">
       <div id="role-admin" class="role-btn" onclick="pickRole('admin')" style="background:var(--pri)">
         <div style="font-size:18px;margin-bottom:4px">🏫</div>
         <div style="font-size:10px;font-weight:700;color:white">Admin</div>
@@ -284,6 +284,10 @@ tr:hover td{background:var(--surf-hi)}
       <div id="role-teacher" class="role-btn" onclick="pickRole('teacher')" style="background:var(--surf-1)">
         <div style="font-size:18px;margin-bottom:4px">👩‍🏫</div>
         <div style="font-size:10px;font-weight:700;color:var(--txt2)">Teacher</div>
+      </div>
+      <div id="role-student" class="role-btn" onclick="pickRole('student')" style="background:var(--surf-1)">
+        <div style="font-size:18px;margin-bottom:4px">🎓</div>
+        <div style="font-size:10px;font-weight:700;color:var(--txt2)">Student</div>
       </div>
       <div id="role-kiosk" class="role-btn" onclick="pickRole('kiosk')" style="background:var(--surf-1)">
         <div style="font-size:18px;margin-bottom:4px">📲</div>
@@ -296,12 +300,12 @@ tr:hover td{background:var(--surf-hi)}
     </div>
 
     <div class="card">
-      <div style="font-family:var(--fh);font-size:17px;font-weight:800;margin-bottom:4px">Sign in</div>
-      <div style="font-size:12px;color:var(--out);margin-bottom:18px">Demo: any email/password · role tab sets your view</div>
-      <div class="fg"><label class="fl">Email address</label><input class="fi" type="email" id="l-email" placeholder="you@school.edu.ng"></div>
-      <div class="fg"><label class="fl">Password</label><input class="fi" type="password" id="l-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <div style="font-family:var(--fh);font-size:17px;font-weight:800;margin-bottom:4px" id="login-title">Sign in</div>
+      <div style="font-size:12px;color:var(--out);margin-bottom:18px" id="login-sub">Sign in with your school account</div>
+      <div class="fg" id="l-email-wrap"><label class="fl" id="l-email-label">Email address</label><input class="fi" type="text" id="l-email" placeholder="you@school.edu.ng"></div>
+      <div class="fg" id="l-pass-wrap"><label class="fl">Password</label><input class="fi" type="password" id="l-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
       <div id="l-err" style="display:none;padding:8px 12px;background:var(--err-cont);color:#690005;border-radius:8px;font-size:12px;margin-bottom:12px"></div>
-      <button class="btn btn-pri btn-full" onclick="doLogin()" style="height:44px;font-size:14px;border-radius:10px"><span class="mi" style="font-size:17px">login</span>Sign in to EduCall</button>
+      <button class="btn btn-pri btn-full" onclick="doLogin()" style="height:44px;font-size:14px;border-radius:10px"><span class="mi" style="font-size:17px">login</span><span id="login-btn-txt">Sign in to EduCall</span></button>
     </div>
     <div style="text-align:center;margin-top:14px;font-size:12px;color:var(--out)">
       New school? <span onclick="showPg('pg-register')" style="color:var(--tint);font-weight:600;cursor:pointer">Register here</span>
@@ -333,15 +337,14 @@ tr:hover td{background:var(--surf-hi)}
       <div class="text-sm text-muted mb-16">Tell us about your school</div>
       <div class="fg"><label class="fl">School Name *</label><input class="fi" id="r-sname" placeholder="e.g. Sunshine Secondary School"></div>
       <div class="g2">
-        <div class="fg"><label class="fl">Country</label><select class="fs" id="r-country"><option>Nigeria</option><option>United Kingdom</option><option>Ghana</option><option>Kenya</option><option>South Africa</option></select></div>
-        <div class="fg"><label class="fl">City *</label><input class="fi" id="r-city" placeholder="e.g. Lagos"></div>
+        <div class="fg"><label class="fl">Country</label><select class="fs" id="r-country" onchange="onCountryChange()"></select></div>
+        <div class="fg" id="r-region-wrap"><label class="fl" id="r-region-label">State / Region</label><select class="fs" id="r-region"></select></div>
       </div>
+      <div class="fg"><label class="fl">City / Town *</label><input class="fi" id="r-city" placeholder="e.g. Lagos"></div>
       <div class="fg"><label class="fl">School Type</label><select class="fs" id="r-type"><option>Private Secondary</option><option>Government Secondary</option><option>International School</option><option>Faith-based School</option><option>Primary School</option><option>Combined Primary & Secondary</option></select></div>
-      <div class="fg"><label class="fl">School includes</label>
-        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px">
-          <label style="display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:20px;background:var(--surf-1);cursor:pointer;font-size:12px;font-weight:500"><input type="checkbox" id="has-primary" style="accent-color:var(--pri)"> Primary (ages 5–11)</label>
-          <label style="display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:20px;background:var(--surf-1);cursor:pointer;font-size:12px;font-weight:500"><input type="checkbox" id="has-secondary" checked style="accent-color:var(--pri)"> Secondary (SS1–SS3)</label>
-        </div>
+      <div class="fg"><label class="fl">School Tiers — select every level your school runs (excludes university)</label>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px" id="tier-checks"></div>
+        <div style="font-size:11px;color:var(--out);margin-top:6px">Options update automatically based on the country selected above (Nigerian JSS/SS, UK Years, or US Grades).</div>
       </div>
       <div style="display:flex;justify-content:space-between;margin-top:6px">
         <button class="btn btn-sec btn-sm" onclick="showPg('pg-login')">← Back</button>
@@ -374,31 +377,8 @@ tr:hover td{background:var(--surf-hi)}
     <div id="reg3" style="display:none">
       <div class="card">
         <div style="font-family:var(--fh);font-size:16px;font-weight:700;margin-bottom:2px">Class Configuration</div>
-        <div class="text-sm text-muted mb-16">Select the classes your school runs</div>
-        <div class="fg">
-          <div class="fl">Senior Secondary</div>
-          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px" id="ss-cls">
-            <label style="display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:20px;background:var(--surf-1);cursor:pointer;font-size:12px;font-weight:500"><input type="checkbox" value="SS1A" checked style="accent-color:var(--pri)"> SS1A</label>
-            <label style="display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:20px;background:var(--surf-1);cursor:pointer;font-size:12px;font-weight:500"><input type="checkbox" value="SS1B" style="accent-color:var(--pri)"> SS1B</label>
-            <label style="display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:20px;background:var(--surf-1);cursor:pointer;font-size:12px;font-weight:500"><input type="checkbox" value="SS1C" style="accent-color:var(--pri)"> SS1C</label>
-            <label style="display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:20px;background:var(--surf-1);cursor:pointer;font-size:12px;font-weight:500"><input type="checkbox" value="SS2A" checked style="accent-color:var(--pri)"> SS2A</label>
-            <label style="display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:20px;background:var(--surf-1);cursor:pointer;font-size:12px;font-weight:500"><input type="checkbox" value="SS2B" style="accent-color:var(--pri)"> SS2B</label>
-            <label style="display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:20px;background:var(--surf-1);cursor:pointer;font-size:12px;font-weight:500"><input type="checkbox" value="SS3A" checked style="accent-color:var(--pri)"> SS3A</label>
-            <label style="display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:20px;background:var(--surf-1);cursor:pointer;font-size:12px;font-weight:500"><input type="checkbox" value="SS3B" style="accent-color:var(--pri)"> SS3B</label>
-          </div>
-        </div>
-        <div class="fg" id="primary-cls-wrap" style="display:none">
-          <div class="fl">Primary Classes</div>
-          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px">
-            <label style="display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:20px;background:var(--surf-1);cursor:pointer;font-size:12px;font-weight:500"><input type="checkbox" value="P1" style="accent-color:var(--sec)"> P1</label>
-            <label style="display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:20px;background:var(--surf-1);cursor:pointer;font-size:12px;font-weight:500"><input type="checkbox" value="P2" style="accent-color:var(--sec)"> P2</label>
-            <label style="display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:20px;background:var(--surf-1);cursor:pointer;font-size:12px;font-weight:500"><input type="checkbox" value="P3" style="accent-color:var(--sec)"> P3</label>
-            <label style="display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:20px;background:var(--surf-1);cursor:pointer;font-size:12px;font-weight:500"><input type="checkbox" value="P4" style="accent-color:var(--sec)"> P4</label>
-            <label style="display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:20px;background:var(--surf-1);cursor:pointer;font-size:12px;font-weight:500"><input type="checkbox" value="P5" style="accent-color:var(--sec)"> P5</label>
-            <label style="display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:20px;background:var(--surf-1);cursor:pointer;font-size:12px;font-weight:500"><input type="checkbox" value="P6" style="accent-color:var(--sec)"> P6</label>
-          </div>
-          <div style="font-size:11px;color:var(--out);margin-top:6px">UK standard: children under 8 use guardian check-in. Ages 8+ can use biometric self check-in.</div>
-        </div>
+        <div class="text-sm text-muted mb-16">Confirm or adjust the classes for each tier you selected. You can add/edit/remove classes anytime later in Settings → Curriculum & Classes.</div>
+        <div id="reg3-tiers"></div>
         <div class="fg"><label class="fl">Academic Year</label><select class="fs" id="r-year"><option>2025/2026</option><option>2026/2027</option></select></div>
         <div style="background:var(--surf-1);border-radius:10px;padding:12px;margin-bottom:12px">
           <div style="font-size:11px;font-weight:600;color:var(--txt2);margin-bottom:5px">Registering as:</div>
@@ -618,6 +598,23 @@ tr:hover td{background:var(--surf-hi)}
   </div>
 </div>
 
+<!-- ═══════════════════════════════════
+     STUDENT PORTAL
+═══════════════════════════════════ -->
+<div id="pg-student" class="page" style="background:var(--surf)">
+  <div class="topbar" style="padding:20px 28px 0">
+    <div>
+      <div class="tb-title" id="stu-title">My Portal</div>
+      <div class="tb-sub" id="stu-sub"></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="text-align:right"><div style="font-family:var(--fh);font-size:18px;font-weight:800;color:var(--pri)" id="stu-clock">--:--</div><div style="font-size:10px;color:var(--out)" id="stu-date">—</div></div>
+      <button class="btn btn-sec btn-sm" onclick="showPg('pg-login')"><span class="mi" style="font-size:15px">logout</span>Sign Out</button>
+    </div>
+  </div>
+  <div class="content" id="student-content"></div>
+</div>
+
 <!-- ═══════════════════ MODALS ═══════════════════ -->
 
 <!-- Student modal -->
@@ -835,6 +832,32 @@ tr:hover td{background:var(--surf-hi)}
   </div>
 </div>
 
+<!-- Behaviour & Merit award modal -->
+<div class="modal-bg" id="modal-behaviour">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-title">Award Behaviour Points</div>
+    <div class="modal-sub">Logged instantly · parent notified via WhatsApp/SMS</div>
+    <div class="fg"><label class="fl">Student</label><select class="fs" id="bm-student"></select></div>
+    <div class="fg">
+      <label class="fl">Type</label>
+      <div style="display:flex;gap:8px">
+        <button type="button" id="bt-positive" onclick="setBehType('positive')" style="flex:1;padding:11px;border-radius:10px;border:none;font-weight:700;font-size:13px;cursor:pointer;background:var(--sec);color:white"><span class="mi" style="font-size:16px;vertical-align:middle">thumb_up</span> Positive</button>
+        <button type="button" id="bt-negative" onclick="setBehType('negative')" style="flex:1;padding:11px;border-radius:10px;border:none;font-weight:700;font-size:13px;cursor:pointer;background:var(--surf-2);color:var(--txt2)"><span class="mi" style="font-size:16px;vertical-align:middle">thumb_down</span> Negative</button>
+      </div>
+    </div>
+    <div class="fg"><label class="fl">Points</label><input class="fi" id="bm-points" type="number" value="5"></div>
+    <div class="fg">
+      <label class="fl">Quick reasons</label>
+      <div id="bm-reasons" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px"></div>
+      <input class="fi" id="bm-reason-custom" placeholder="Or type a custom reason…">
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-sec" onclick="closeModal('modal-behaviour')">Cancel</button>
+      <button class="btn btn-pri" onclick="saveBehaviour()"><span class="mi" style="font-size:15px">military_tech</span>Award Points</button>
+    </div>
+  </div>
+</div>
+
 <!-- SEN equipment check overlay -->
 <div id="equip-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;display:none;align-items:center;justify-content:center">
   <div style="background:white;border-radius:16px;padding:26px;max-width:400px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.3)">
@@ -865,7 +888,102 @@ const CURRICULUM_PRESETS = {
   uk:{       ss:['Year 7','Year 8','Year 9','Year 10','Year 11','Year 12','Year 13'], pri:['Year 1','Year 2','Year 3','Year 4','Year 5','Year 6'] },
   us:{       ss:['Grade 6','Grade 7','Grade 8','Grade 9','Grade 10','Grade 11','Grade 12'], pri:['Kindergarten','Grade 1','Grade 2','Grade 3','Grade 4','Grade 5'] },
 };
+
+// ════════════════════════════════════════════
+//  SCHOOL TIERS — full coverage Nursery → Sixth Form / High School (excludes university)
+//  Used during registration so a school can pick exactly the tiers it runs.
+// ════════════════════════════════════════════
+const TIER_PRESETS = {
+  nigerian:{
+    nursery:{label:'Nursery / Pre-Primary (ages 1–5)',group:'primary',classes:['Creche','Pre-Nursery','Nursery 1','Nursery 2']},
+    primary:{label:'Primary (P1–P6, ages 5–11)',group:'primary',classes:['P1','P2','P3','P4','P5','P6']},
+    junior:{label:'Junior Secondary (JSS1–JSS3)',group:'secondary',classes:['JSS1A','JSS1B','JSS1C','JSS2A','JSS2B','JSS2C','JSS3A','JSS3B','JSS3C']},
+    senior:{label:'Senior Secondary (SS1–SS3)',group:'secondary',classes:['SS1A','SS1B','SS1C','SS2A','SS2B','SS2C','SS3A','SS3B','SS3C']},
+  },
+  uk:{
+    nursery:{label:'Nursery & Reception (ages 3–5)',group:'primary',classes:['Nursery','Reception']},
+    primary:{label:'Primary (Year 1–6)',group:'primary',classes:['Year 1','Year 2','Year 3','Year 4','Year 5','Year 6']},
+    secondary:{label:'Secondary (Year 7–11)',group:'secondary',classes:['Year 7','Year 8','Year 9','Year 10','Year 11']},
+    sixthform:{label:'Sixth Form / College (Year 12–13)',group:'secondary',classes:['Year 12','Year 13']},
+  },
+  us:{
+    prek:{label:'Pre-K & Kindergarten',group:'primary',classes:['Pre-K','Kindergarten']},
+    elementary:{label:'Elementary (Grade 1–5)',group:'primary',classes:['Grade 1','Grade 2','Grade 3','Grade 4','Grade 5']},
+    middle:{label:'Middle School (Grade 6–8)',group:'secondary',classes:['Grade 6','Grade 7','Grade 8']},
+    high:{label:'High School (Grade 9–12)',group:'secondary',classes:['Grade 9','Grade 10','Grade 11','Grade 12']},
+  },
+};
+// Default-checked tiers per curriculum (typical "secondary school" registrant)
+const TIER_DEFAULTS = {
+  nigerian:['junior','senior'],
+  uk:['secondary'],
+  us:['middle','high'],
+};
+// Map a country to a curriculum/tier system. UK & US get their own; everything else
+// (Nigeria, Ghana, Kenya, South Africa, and other Commonwealth/African markets) uses
+// the Nigerian JSS/SS structure as the closest fit.
+function curriculumForCountry(country){
+  if(country==='United Kingdom')return'uk';
+  if(country==='United States')return'us';
+  return'nigerian';
+}
 const SUBJECTS = ['Mathematics','English Language','Physics','Chemistry','Biology','Economics','Government','Literature','Computer Science','Civic Education','Further Mathematics','Agricultural Science'];
+
+// ════════════════════════════════════════════
+//  COUNTRIES & STATES/REGIONS — for school registration
+// ════════════════════════════════════════════
+const COUNTRIES = ["Nigeria","United Kingdom","United States","Ghana","Kenya","South Africa","Afghanistan","Albania","Algeria","Andorra","Angola","Antigua and Barbuda","Argentina","Armenia","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bhutan","Bolivia","Bosnia and Herzegovina","Botswana","Brazil","Brunei","Bulgaria","Burkina Faso","Burundi","Cabo Verde","Cambodia","Cameroon","Canada","Central African Republic","Chad","Chile","China","Colombia","Comoros","Congo (Republic)","Congo (DRC)","Costa Rica","Croatia","Cuba","Cyprus","Czech Republic","Denmark","Djibouti","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Eswatini","Ethiopia","Fiji","Finland","France","Gabon","Gambia","Georgia","Germany","Greece","Grenada","Guatemala","Guinea","Guinea-Bissau","Guyana","Haiti","Honduras","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Israel","Italy","Ivory Coast","Jamaica","Japan","Jordan","Kazakhstan","Kiribati","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Marshall Islands","Mauritania","Mauritius","Mexico","Micronesia","Moldova","Monaco","Mongolia","Montenegro","Morocco","Mozambique","Myanmar","Namibia","Nauru","Nepal","Netherlands","New Zealand","Nicaragua","Niger","North Korea","North Macedonia","Norway","Oman","Pakistan","Palau","Palestine","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Qatar","Romania","Russia","Rwanda","Saint Kitts and Nevis","Saint Lucia","Saint Vincent and the Grenadines","Samoa","San Marino","Sao Tome and Principe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia","Solomon Islands","Somalia","South Korea","South Sudan","Spain","Sri Lanka","Sudan","Suriname","Sweden","Switzerland","Syria","Taiwan","Tajikistan","Tanzania","Thailand","Timor-Leste","Togo","Tonga","Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Tuvalu","Uganda","Ukraine","United Arab Emirates","Uruguay","Uzbekistan","Vanuatu","Vatican City","Venezuela","Vietnam","Yemen","Zambia","Zimbabwe"];
+
+// States / provinces / regions per country — populates the State/Region dropdown.
+// Countries not listed here fall back to a free-text "State / Region" field.
+const COUNTRY_REGIONS = {
+  "Nigeria": ["Abia","Adamawa","Akwa Ibom","Anambra","Bauchi","Bayelsa","Benue","Borno","Cross River","Delta","Ebonyi","Edo","Ekiti","Enugu","FCT (Abuja)","Gombe","Imo","Jigawa","Kaduna","Kano","Katsina","Kebbi","Kogi","Kwara","Lagos","Nasarawa","Niger","Ogun","Ondo","Osun","Oyo","Plateau","Rivers","Sokoto","Taraba","Yobe","Zamfara"],
+  "United Kingdom": ["England","Scotland","Wales","Northern Ireland"],
+  "United States": ["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"],
+  "Ghana": ["Ahafo","Ashanti","Bono","Bono East","Central","Eastern","Greater Accra","North East","Northern","Oti","Savannah","Upper East","Upper West","Volta","Western","Western North"],
+  "Kenya": ["Nairobi","Mombasa","Kisumu","Nakuru","Kiambu","Machakos","Uasin Gishu","Kakamega","Bungoma","Meru","Kilifi","Kajiado","Nyeri","Kericho","Embu","Garissa","Turkana","Laikipia","Other"],
+  "South Africa": ["Eastern Cape","Free State","Gauteng","KwaZulu-Natal","Limpopo","Mpumalanga","North West","Northern Cape","Western Cape"],
+  "Canada": ["Alberta","British Columbia","Manitoba","New Brunswick","Newfoundland and Labrador","Northwest Territories","Nova Scotia","Nunavut","Ontario","Prince Edward Island","Quebec","Saskatchewan","Yukon"],
+  "India": ["Andhra Pradesh","Arunachal Pradesh","Assam","Bihar","Chhattisgarh","Goa","Gujarat","Haryana","Himachal Pradesh","Jharkhand","Karnataka","Kerala","Madhya Pradesh","Maharashtra","Manipur","Meghalaya","Mizoram","Nagaland","Odisha","Punjab","Rajasthan","Sikkim","Tamil Nadu","Telangana","Tripura","Uttar Pradesh","Uttarakhand","West Bengal","Delhi"],
+  "Australia": ["New South Wales","Queensland","South Australia","Tasmania","Victoria","Western Australia","Australian Capital Territory","Northern Territory"],
+  "United Arab Emirates": ["Abu Dhabi","Dubai","Sharjah","Ajman","Umm Al Quwain","Ras Al Khaimah","Fujairah"],
+};
+
+// ════════════════════════════════════════════
+//  SUBJECT CATALOGUE — UK + Nigeria + US combined
+//  Organised by category for Academic Management
+// ════════════════════════════════════════════
+const SUBJECT_CATALOGUE = {
+  'Core Academic': ['English Language','English Literature','Mathematics','Further Mathematics','Science','Biology','Chemistry','Physics','Combined Science','Basic Science'],
+  'Humanities': ['History','Geography','Government','Politics','Sociology','Psychology','Religious Studies','Christian Religious Studies','Islamic Religious Studies','Citizenship','Civic Education','Social Studies','Philosophy'],
+  'Languages': ['French','Spanish','German','Arabic','Yoruba','Hausa','Igbo','Creative Writing','Journalism'],
+  'Business & Commerce': ['Business Studies','Economics','Accounting','Financial Accounting','Commerce','Marketing','Entrepreneurship','Business Management','Office Practice'],
+  'Technology': ['ICT','Computing','Computer Science','Digital Technology','Programming','Robotics','Artificial Intelligence','Cybersecurity','Statistics'],
+  'Creative Arts': ['Art','Fine Art','Art & Design','Music','Drama','Theatre','Photography','Media Studies','Cultural & Creative Arts','Graphic Design','Dance'],
+  'Vocational & Technical': ['Engineering','Technical Drawing','Design & Technology','Construction','Agricultural Science','Food Technology','Home Economics','Fashion Design','Catering','Automotive Technology','Electrical Installation','Solar Technology','Crop Production','Horticulture','Livestock Farming','Beauty & Cosmetology','GSM Repairs','Computer Repairs'],
+  'Health & Wellbeing': ['Physical Education','Health Education','Personal Development','Relationships & Health Education','Anatomy','Environmental Science','Earth Science'],
+};
+// Flat list of all subjects (for search / select dropdowns)
+const ALL_SUBJECTS = Object.values(SUBJECT_CATALOGUE).flat();
+
+// Curriculum-aware "stage" groupings — used to filter the catalogue by class level
+const CURRICULUM_STAGES = {
+  nigerian: {
+    'Junior Secondary (JSS1–JSS3)': ['English Language','Mathematics','Basic Science','Digital Technology','Social Studies','Civic Education','Yoruba','Hausa','Igbo','History','Cultural & Creative Arts','Agricultural Science','Business Studies','Home Economics','Christian Religious Studies','Islamic Religious Studies','French','Arabic','Physical Education'],
+    'Senior Secondary — Science (SS1–SS3)': ['English Language','Mathematics','Civic Education','Digital Technology','Physics','Chemistry','Biology','Further Mathematics','Agricultural Science','Geography','Technical Drawing','Computer Science'],
+    'Senior Secondary — Commercial (SS1–SS3)': ['English Language','Mathematics','Civic Education','Economics','Financial Accounting','Commerce','Marketing','Business Management','Office Practice'],
+    'Senior Secondary — Arts (SS1–SS3)': ['English Language','Mathematics','Civic Education','English Literature','Government','History','Christian Religious Studies','Islamic Religious Studies','Fine Art','French','Music'],
+  },
+  uk: {
+    'Key Stage 3 (Year 7–9)': ['English Language','English Literature','Mathematics','Science','History','Geography','Computing','Design & Technology','Art & Design','Music','Physical Education','Citizenship','French','Spanish','German','Religious Studies','Relationships & Health Education'],
+    'Key Stage 4 / GCSE (Year 10–11)': ['English Language','English Literature','Mathematics','Biology','Chemistry','Physics','Combined Science','History','Geography','Computer Science','Business Studies','Economics','Psychology','Sociology','Media Studies','Religious Studies','Citizenship','French','Spanish','German','Art','Music','Drama','Photography','Design & Technology','Food Technology','Physical Education','Statistics'],
+    'Sixth Form / A-Level (Year 12–13)': ['Mathematics','Further Mathematics','Physics','Chemistry','Biology','Computer Science','Economics','Business Studies','Accounting','Psychology','Sociology','Politics','History','Geography','English Literature','Media Studies','Philosophy','French','Spanish','German','Art','Music','Drama'],
+  },
+  us: {
+    'Middle School (Grade 6–8)': ['English Language','Mathematics','Science','Social Studies','Physical Education','Health Education','Computer Science','Art','Music','Drama','Spanish','French','German','Robotics'],
+    'High School (Grade 9–12)': ['English Language','English Literature','Creative Writing','Journalism','Mathematics','Statistics','Biology','Chemistry','Physics','Environmental Science','Earth Science','Anatomy','History','Government','Sociology','Psychology','Geography','Economics','Computer Science','Programming','Cybersecurity','Accounting','Entrepreneurship','Marketing','Art','Graphic Design','Photography','Music','Theatre','Dance','Engineering','Automotive Technology','Construction','Catering','Agricultural Science'],
+  },
+};
 const TODAY = new Date().toISOString().split('T')[0];
 const TODAY_DISP = new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
 
@@ -929,7 +1047,49 @@ const S = {
   editingTeacher:null,
   senEnabled:false,
   senEquipment:[],
+  // ── v6 additions ──
+  classSubjects:{ // subjects assigned per class (curriculum-aware, editable)
+    'SS1A':['Mathematics','English Language','Civic Education','Digital Technology','Basic Science'],
+    'SS1B':['Mathematics','English Language','Civic Education','Digital Technology','Basic Science'],
+    'SS1C':['Mathematics','English Language','Civic Education','Digital Technology','Basic Science'],
+    'SS2A':['Mathematics','English Language','Physics','Chemistry','Biology','Further Mathematics'],
+    'SS2B':['Mathematics','English Language','Biology','Economics','Government'],
+    'SS2C':['Mathematics','English Language','Computer Science','Physics','Geography'],
+    'SS3A':['Mathematics','English Language','Physics','Chemistry','Biology','Further Mathematics'],
+    'SS3B':['Mathematics','English Language','Economics','Government','Literature'],
+    'P1':['English Language','Mathematics','Basic Science','Creative Arts'],
+    'P3':['English Language','Mathematics','Basic Science','Creative Arts','ICT'],
+  },
+  behaviourLog:[ // merit / behaviour points
+    {id:1,student:'Adaeze Okonkwo',class:'SS2A',type:'positive',points:5,reason:'Excellent class participation',subject:'Mathematics',date:TODAY,time:'09:40',by:'Mr Adeyemi'},
+    {id:2,student:'Babatunde Adeyemi',class:'SS2A',type:'negative',points:-2,reason:'Late to class without note',subject:'Mathematics',date:TODAY,time:'10:55',by:'Mr Adeyemi'},
+    {id:3,student:'Ngozi Obi',class:'SS3A',type:'positive',points:3,reason:'Helped a classmate with homework',subject:'Chemistry',date:TODAY,time:'11:20',by:'Mrs Aliyu'},
+  ],
+  nextBehaviourId:4,
+  importJobs:[], // history of bulk migration imports
+  seatingPlans:{}, // { className: [studentId,...] } seat order, index = seat position
 };
+
+// Getting Started checklist — each item checks live state
+const ONBOARDING_STEPS = [
+  {id:'profile',icon:'business',label:'Complete school profile',desc:'School name, country, and curriculum set',
+    check:()=>!!(S.user.school&&S.curriculum), goto:()=>navTo('settings')},
+  {id:'curriculum',icon:'school',label:'Configure curriculum & classes',desc:'Choose Nigerian, UK, or US system and confirm class names',
+    check:()=>(S.classesSecondary.length>0&&S.classesPrimary.length>0), goto:()=>{navTo('settings');setTimeout(()=>renderSettings('curriculum'),50)}},
+  {id:'students',icon:'groups',label:'Import or add students',desc:'Use Data Migration to bulk-import, or add students manually',
+    check:()=>S.students.length>0, goto:()=>navTo('migration')},
+  {id:'teachers',icon:'person',label:'Add teaching staff',desc:'Register teachers and assign subjects & classes',
+    check:()=>S.teachers.length>0, goto:()=>navTo('teachers')},
+  {id:'subjects',icon:'menu_book',label:'Set up Academic Management',desc:'Assign subjects to each class from the subject catalogue',
+    check:()=>Object.values(S.classSubjects).some(arr=>arr.length>0), goto:()=>navTo('academics')},
+  {id:'notify',icon:'notifications_active',label:'Set notification channels',desc:'Confirm WhatsApp/SMS/Email defaults for parent alerts',
+    check:()=>Object.values(S.defaultNotifChannels).some(v=>v), goto:()=>navTo('settings')},
+  {id:'device',icon:'fingerprint',label:'Run Phase 0 hardware check',desc:'Validate the biometric scanner before going live',
+    check:()=>_p0Done, goto:()=>{navTo('settings');setTimeout(()=>renderSettings('device'),50)}},
+  {id:'family',icon:'family_restroom',label:'Register family members',desc:'Add drivers, guardians, or carers for primary/SEN students',
+    check:()=>S.famMembers.length>0, goto:()=>navTo('family')},
+];
+let _p0Done=false;
 
 // ════════════════════════════════════════════
 //  PAGE NAVIGATION
@@ -949,17 +1109,45 @@ function closeModal(id){document.getElementById(id).classList.remove('open')}
 // ════════════════════════════════════════════
 function pickRole(r){
   S.role=r;
-  ['admin','teacher','kiosk','family'].forEach(id=>{
+  ['admin','teacher','student','kiosk','family'].forEach(id=>{
     const b=document.getElementById('role-'+id);
     if(!b)return;
     b.style.background=id===r?'var(--pri)':'var(--surf-1)';
     b.querySelector('div:last-child').style.color=id===r?'white':'var(--txt2)';
   });
+  // Adjust login form for student role (admission number, no password)
+  const emailLabel=document.getElementById('l-email-label');
+  const emailInput=document.getElementById('l-email');
+  const passWrap=document.getElementById('l-pass-wrap');
+  const sub=document.getElementById('login-sub');
+  const btnTxt=document.getElementById('login-btn-txt');
+  if(r==='student'){
+    if(emailLabel)emailLabel.textContent='Admission Number';
+    if(emailInput)emailInput.placeholder='e.g. SCH/24/001';
+    if(passWrap)passWrap.style.display='none';
+    if(sub)sub.textContent='Enter your admission number — ask your school admin if unsure';
+    if(btnTxt)btnTxt.textContent='View My Portal';
+  }else{
+    if(emailLabel)emailLabel.textContent='Email address';
+    if(emailInput)emailInput.placeholder='you@school.edu.ng';
+    if(passWrap)passWrap.style.display='block';
+    if(sub)sub.textContent='Sign in with your school account';
+    if(btnTxt)btnTxt.textContent='Sign in to EduCall';
+  }
 }
 
 function doLogin(){
   const email=document.getElementById('l-email').value.trim();
   if(!email){showLoginErr('Please enter your email');return}
+  // Student role: login with admission number instead of an account
+  if(S.role==='student'){
+    const admno=email.trim().toUpperCase();
+    const stu=S.students.find(s=>s.admno.toUpperCase()===admno||s.name.toLowerCase()===email.toLowerCase());
+    if(!stu){showLoginErr('No student found with that admission number. Ask your school administrator.');return}
+    S.studentUser=stu;
+    showPg('pg-student');startStudentClock();renderStudentPortal();
+    return;
+  }
   // Try localStorage schools
   let school=null;
   try{
@@ -968,9 +1156,10 @@ function doLogin(){
     school=schools.find(s=>s.email===email&&s.password===pass);
   }catch(e){}
   if(!school){
-    school={name:email.split('@')[0].replace(/[._]/g,' ').replace(/\b\w/g,c=>c.toUpperCase()),email,schoolName:'Sunshine Secondary School',schoolId:'sunshine-demo',country:'Nigeria',city:'Lagos',role:S.role,isDemo:true};
+    showLoginErr('No account found with that email and password. New school? Register below.');
+    return;
   }
-  S.user={name:school.name,email:school.email,school:school.schoolName+', '+(school.city||''),schoolId:school.schoolId,role:school.role||S.role,initials:school.name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase(),isDemo:school.isDemo||false};
+  S.user={name:school.name,email:school.email,school:school.schoolName+', '+(school.city||''),schoolId:school.schoolId,role:school.role||S.role,initials:school.name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase(),isDemo:false};
   S.role=S.user.role;
   if(S.role==='kiosk'){showPg('pg-kiosk');startKioskClock()}
   else if(S.role==='family'){showPg('pg-family');startFamClock()}
@@ -983,16 +1172,65 @@ function doLogout(){showPg('pg-login')}
 //  REGISTRATION
 // ════════════════════════════════════════════
 const REG={};
+function onCountryChange(){
+  const country=document.getElementById('r-country').value;
+  const regions=COUNTRY_REGIONS[country];
+  const wrap=document.getElementById('r-region-wrap');
+  const sel=document.getElementById('r-region');
+  const lbl=document.getElementById('r-region-label');
+  if(regions&&regions.length){
+    lbl.textContent=country==='United Kingdom'?'Nation / Region':country==='United States'?'State':'State / Region';
+    wrap.innerHTML=`<label class="fl" id="r-region-label">${lbl.textContent}</label><select class="fs" id="r-region">${regions.map(r=>`<option>${r}</option>`).join('')}</select>`;
+  }else{
+    wrap.innerHTML=`<label class="fl" id="r-region-label">State / Region</label><input class="fi" id="r-region" placeholder="e.g. Province or region">`;
+  }
+  updateTierCheckboxes();
+}
+function updateTierCheckboxes(){
+  const country=document.getElementById('r-country').value;
+  const curr=curriculumForCountry(country);
+  const tiers=TIER_PRESETS[curr];
+  const defaults=TIER_DEFAULTS[curr]||[];
+  const wrap=document.getElementById('tier-checks');
+  if(!wrap)return;
+  wrap.innerHTML=Object.entries(tiers).map(([key,tier])=>
+    `<label style="display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:20px;background:var(--surf-1);cursor:pointer;font-size:12px;font-weight:500"><input type="checkbox" class="tier-pick" value="${key}" ${defaults.includes(key)?'checked':''} style="accent-color:var(--pri)"> ${tier.label}</label>`
+  ).join('');
+}
+function buildRegStep3(){
+  const curr=REG.curriculum;
+  const tiers=TIER_PRESETS[curr];
+  const container=document.getElementById('reg3-tiers');
+  if(!container)return;
+  if(!REG.tiers.length){
+    container.innerHTML=`<div style="padding:14px;background:var(--err-cont);border-radius:9px;font-size:12px;color:#690005;margin-bottom:14px">No school tiers were selected — go back and pick at least one.</div>`;
+    return;
+  }
+  container.innerHTML=REG.tiers.map(key=>{
+    const tier=tiers[key];
+    if(!tier)return'';
+    return `<div class="fg">
+      <div class="fl">${tier.label}</div>
+      <div class="tier-cls-group" data-group="${tier.group}" data-tier="${key}" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px">
+        ${tier.classes.map(cls=>`<label style="display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:20px;background:var(--surf-1);cursor:pointer;font-size:12px;font-weight:500"><input type="checkbox" value="${cls}" checked style="accent-color:${tier.group==='primary'?'var(--sec)':'var(--pri)'}"> ${cls}</label>`).join('')}
+      </div>
+      ${tier.group==='primary'?`<div style="font-size:11px;color:var(--out);margin-top:6px">Children under 8 use guardian check-in by default. Ages 8+ can use biometric self check-in.</div>`:''}
+    </div>`;
+  }).join('');
+}
 function regNext(step){
   if(step===1){
     const n=document.getElementById('r-sname').value.trim();
     const c=document.getElementById('r-city').value.trim();
     if(!n||!c){toast('Please fill in school name and city','err');return}
-    REG.sname=n;REG.city=c;REG.country=document.getElementById('r-country').value;REG.type=document.getElementById('r-type').value;
-    REG.hasPrimary=document.getElementById('has-primary').checked;
-    REG.hasSecondary=document.getElementById('has-secondary').checked;
-    // Show primary classes if needed
-    document.getElementById('primary-cls-wrap').style.display=REG.hasPrimary?'block':'none';
+    REG.sname=n;REG.city=c;REG.country=document.getElementById('r-country').value;
+    REG.region=document.getElementById('r-region')?document.getElementById('r-region').value:'';
+    REG.type=document.getElementById('r-type').value;
+    REG.curriculum=curriculumForCountry(REG.country);
+    REG.tiers=Array.from(document.querySelectorAll('.tier-pick:checked')).map(c=>c.value);
+    if(!REG.tiers.length){toast('Select at least one school tier','err');return}
+    REG.hasPrimary=REG.tiers.some(t=>TIER_PRESETS[REG.curriculum][t]&&TIER_PRESETS[REG.curriculum][t].group==='primary');
+    buildRegStep3();
   }
   if(step===2){
     const n=document.getElementById('r-name').value.trim();
@@ -1024,18 +1262,31 @@ function stepDot(n,state){
   else{d.style.background='var(--surf-hi)';d.style.color='var(--out)'}
 }
 function completeReg(){
-  const classes=Array.from(document.querySelectorAll('#ss-cls input:checked')).map(c=>c.value);
-  if(!classes.length){toast('Select at least one class','err');return}
-  REG.classes=classes;
-  const rec={schoolId:REG.schoolId,schoolName:REG.sname,name:REG.name,email:REG.email,password:REG.pass,role:REG.role,country:REG.country,city:REG.city,classes:REG.classes,hasPrimary:REG.hasPrimary,isDemo:false,registeredAt:new Date().toISOString()};
+  const groups=document.querySelectorAll('.tier-cls-group');
+  let classesPrimary=[],classesSecondary=[];
+  groups.forEach(g=>{
+    const checked=Array.from(g.querySelectorAll('input:checked')).map(c=>c.value);
+    if(g.dataset.group==='primary')classesPrimary.push(...checked);
+    else classesSecondary.push(...checked);
+  });
+  if(!classesPrimary.length&&!classesSecondary.length){toast('Select at least one class','err');return}
+  REG.classesPrimary=classesPrimary;
+  REG.classesSecondary=classesSecondary;
+  REG.classes=[...classesSecondary,...classesPrimary];
+  const rec={schoolId:REG.schoolId,schoolName:REG.sname,name:REG.name,email:REG.email,password:REG.pass,role:REG.role,country:REG.country,region:REG.region||'',city:REG.city,curriculum:REG.curriculum,tiers:REG.tiers,classes:REG.classes,classesPrimary:REG.classesPrimary,classesSecondary:REG.classesSecondary,hasPrimary:REG.hasPrimary,isDemo:false,registeredAt:new Date().toISOString()};
   try{const schools=JSON.parse(localStorage.getItem('educall_schools')||'[]');schools.push(rec);localStorage.setItem('educall_schools',JSON.stringify(schools));}catch(e){}
   document.getElementById('reg3').style.display='none';document.getElementById('reg4').style.display='block';
   document.getElementById('reg-success-msg').textContent=REG.sname+' is registered on EduCall.';
-  document.getElementById('reg-success-detail').innerHTML='<b>School:</b> '+REG.sname+'<br><b>Admin:</b> '+REG.name+'<br><b>Email:</b> '+REG.email+'<br><b>Classes:</b> '+REG.classes.join(', ');
+  const tierLabels=REG.tiers.map(t=>TIER_PRESETS[REG.curriculum][t]?.label).filter(Boolean);
+  document.getElementById('reg-success-detail').innerHTML='<b>School:</b> '+REG.sname+'<br><b>Location:</b> '+REG.city+(REG.region?', '+REG.region:'')+', '+REG.country+'<br><b>Admin:</b> '+REG.name+'<br><b>Email:</b> '+REG.email+'<br><b>Tiers:</b> '+tierLabels.join(', ')+'<br><b>Total classes:</b> '+REG.classes.length;
   stepDot(3,'done');
 }
 function loginAfterReg(){
   S.user={name:REG.name,email:REG.email,school:REG.sname+', '+REG.city,schoolId:REG.schoolId,role:'admin',initials:REG.name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase(),isDemo:false};
+  S.schoolCountry=REG.country;S.schoolRegion=REG.region;S.schoolCity=REG.city;
+  S.curriculum=REG.curriculum;
+  S.classesPrimary=REG.classesPrimary.length?REG.classesPrimary:S.classesPrimary;
+  S.classesSecondary=REG.classesSecondary.length?REG.classesSecondary:S.classesSecondary;
   S.role='admin';showPg('pg-app');initApp();
 }
 
@@ -1045,19 +1296,23 @@ function loginAfterReg(){
 const NAV_ADMIN=[
   {id:'dashboard',icon:'dashboard',label:'Dashboard'},
   {id:'timetable',icon:'calendar_month',label:'Subject Timetable'},
+  {id:'academics',icon:'menu_book',label:'Academic Management'},
   {id:'biometric',icon:'fingerprint',label:'Biometric Attendance'},
   {id:'students',icon:'groups',label:'Students',b:()=>S.students.length},
   {id:'teachers',icon:'school',label:'Teachers',b:()=>S.teachers.length},
   {id:'enrolment',icon:'person_check',label:'Biometric Enrolment'},
   {id:'family',icon:'family_restroom',label:'Family Portal',b:()=>S.famMembers.length,bClass:'amber'},
+  {id:'behaviour',icon:'military_tech',label:'Behaviour & Merit'},
   {id:'reports',icon:'bar_chart',label:'Reports & Analytics'},
   {id:'alerts',icon:'notifications',label:'Parent Alerts',b:()=>S.alerts.filter(a=>a.status==='pending').length||null},
-  {id:'migration',icon:'upload_file',label:'Data Migration',b:()=>null},
+  {id:'migration',icon:'upload_file',label:'Data Migration'},
+  {id:'jobs',icon:'history',label:'Bulk Upload Jobs',b:()=>S.importJobs.length||null},
   {id:'settings',icon:'settings',label:'Settings'},
 ];
 const NAV_TEACHER=[
   {id:'dashboard',icon:'dashboard',label:'Dashboard'},
   {id:'biometric',icon:'fingerprint',label:'Class Attendance'},
+  {id:'behaviour',icon:'military_tech',label:'Behaviour & Merit'},
   {id:'timetable',icon:'calendar_month',label:'My Timetable'},
   {id:'reports',icon:'bar_chart',label:'Reports'},
 ];
@@ -1072,7 +1327,6 @@ function initApp(){
 function renderNav(){
   const items=S.role==='teacher'?NAV_TEACHER:NAV_ADMIN;
   document.getElementById('sidebar-nav').innerHTML=
-    (S.user.isDemo?'<div class="demo-flag" onclick="showPg(\'pg-register\')">⚡ Demo mode — Register school</div>':'')+
     items.map(item=>{
       const b=item.b?item.b():null;
       return `<button class="nav-btn" id="nav-${item.id}" onclick="navTo('${item.id}')">
@@ -1086,7 +1340,7 @@ function navTo(v){
   S.view=v;
   document.querySelectorAll('.nav-btn').forEach(n=>n.classList.remove('active'));
   const el=document.getElementById('nav-'+v);if(el)el.classList.add('active');
-  const map={dashboard:renderDashboard,timetable:renderTimetable,biometric:renderBiometric,students:renderStudents,teachers:renderTeachers,enrolment:renderEnrolment,family:renderFamilyAdmin,reports:renderReports,alerts:renderAlerts,migration:renderMigration,settings:renderSettings};
+  const map={dashboard:renderDashboard,timetable:renderTimetable,academics:renderAcademics,biometric:renderBiometric,students:renderStudents,teachers:renderTeachers,enrolment:renderEnrolment,family:renderFamilyAdmin,behaviour:renderBehaviour,reports:renderReports,alerts:renderAlerts,migration:renderMigration,jobs:renderJobs,settings:renderSettings};
   if(map[v])map[v]();
   document.getElementById('main-area').scrollTop=0;
 }
@@ -1101,6 +1355,51 @@ function setC(html){
 }
 
 // ════════════════════════════════════════════
+//  GETTING STARTED CHECKLIST
+// ════════════════════════════════════════════
+let _gsCollapsed=false;
+function renderGettingStarted(){
+  const done=ONBOARDING_STEPS.filter(s=>s.check()).length;
+  const total=ONBOARDING_STEPS.length;
+  const pct=Math.round((done/total)*100);
+  if(done===total&&_gsCollapsed===false&&!_gsDismissed){
+    // All done — show a slim success banner, dismissible
+    return `<div class="card mb-20" style="background:linear-gradient(135deg,#f0fdf4,#ecfdf5);border:1px solid #bbf7d0;display:flex;align-items:center;gap:12px">
+      <span class="mi" style="font-size:24px;color:var(--sec)">check_circle</span>
+      <div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--on-sec-cont)">Setup complete — EduCall is fully configured!</div><div style="font-size:11px;color:var(--out)">All 8 onboarding steps done. You're ready to run your school on EduCall.</div></div>
+      <button class="btn btn-sec btn-sm" onclick="_gsDismissed=true;navTo('dashboard')">Dismiss</button>
+    </div>`;
+  }
+  return `<div class="card mb-20">
+    <div class="sh" style="cursor:pointer" onclick="_gsCollapsed=!_gsCollapsed;navTo('dashboard')">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="card-title" style="margin-bottom:0">Getting Started</div>
+        <span class="chip ${pct===100?'chip-green':'chip-blue'}">${done} of ${total} complete</span>
+      </div>
+      <span class="mi" style="font-size:20px;color:var(--out)">${_gsCollapsed?'expand_more':'expand_less'}</span>
+    </div>
+    <div class="pb" style="height:6px;border-radius:3px;margin-top:${_gsCollapsed?'0':'10px'}"><div class="pbf" style="width:${pct}%;background:${pct===100?'var(--sec)':'var(--pri)'}"></div></div>
+    ${_gsCollapsed?'':`<div style="margin-top:14px;display:grid;gap:6px">
+      ${ONBOARDING_STEPS.map((step,i)=>{
+        const isDone=step.check();
+        return `<div onclick="onboardingGo(${i})" style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;background:${isDone?'var(--surf-1)':'white'};border:1px solid ${isDone?'transparent':'var(--out-var)'};cursor:pointer;transition:background .12s" onmouseover="this.style.background='var(--surf-2)'" onmouseout="this.style.background='${isDone?'var(--surf-1)':'white'}'">
+          <div style="width:30px;height:30px;border-radius:50%;background:${isDone?'var(--sec-cont)':'var(--surf-hi)'};color:${isDone?'var(--on-sec-cont)':'var(--out)'};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <span class="mi" style="font-size:17px">${isDone?'check':step.icon}</span>
+          </div>
+          <div style="flex:1"><div style="font-size:13px;font-weight:600;${isDone?'color:var(--out);text-decoration:line-through':''}">${step.label}</div><div style="font-size:11px;color:var(--out);margin-top:1px">${step.desc}</div></div>
+          ${isDone?'':`<span class="mi" style="font-size:18px;color:var(--out-var)">chevron_right</span>`}
+        </div>`;
+      }).join('')}
+    </div>`}
+  </div>`;
+}
+let _gsDismissed=false;
+function onboardingGo(i){
+  const step=ONBOARDING_STEPS[i];
+  if(step&&step.goto)step.goto();
+}
+
+// ════════════════════════════════════════════
 //  DASHBOARD
 // ════════════════════════════════════════════
 function renderDashboard(){
@@ -1110,6 +1409,7 @@ function renderDashboard(){
   const primary=S.students.filter(s=>s.isPrimary).length;
   const pending=S.alerts.filter(a=>a.status==='pending').length;
   setC(`
+    ${renderGettingStarted()}
     <div class="stat-grid">
       <div class="stat-card"><span class="chip chip-blue" style="margin-bottom:6px"><span class="mi" style="font-size:12px">groups</span>Students</span><div class="stat-num">${S.students.length}</div><div class="stat-lbl">Total enrolled</div></div>
       <div class="stat-card"><span class="chip chip-green" style="margin-bottom:6px"><span class="mi" style="font-size:12px">fingerprint</span>Biometric</span><div class="stat-num">${enrolled}</div><div class="stat-lbl">Fingerprints enrolled</div></div>
@@ -1197,6 +1497,203 @@ function saveSubject(){
 function delTT(id){S.timetable=S.timetable.filter(t=>t.id!==id);renderTimetable();toast('Period removed')}
 
 // ════════════════════════════════════════════
+//  ACADEMIC MANAGEMENT — Subject Catalogue
+// ════════════════════════════════════════════
+function renderAcademics(activeTab){
+  activeTab=activeTab||'classes';
+  const totalAssigned=Object.values(S.classSubjects).reduce((a,arr)=>a+arr.length,0);
+  setH('Academic Management',`${ALL_SUBJECTS.length} subjects in catalogue · ${totalAssigned} class assignments`);
+  const tabs=[['classes','Class Subjects'],['catalogue','Subject Catalogue'],['seating','Seating Plans']];
+  const tabHtml=`<div style="display:flex;border-bottom:1px solid var(--out-var);margin-bottom:20px">
+    ${tabs.map(([id,lbl])=>`<button class="settings-tab${activeTab===id?' active':''}" onclick="renderAcademics('${id}')">${lbl}</button>`).join('')}
+  </div>`;
+
+  // ── TAB 1: CLASS SUBJECTS ──
+  if(activeTab==='classes'){
+    const cls=S.selectedAcadClass||S.classesSecondary[0];
+    const assigned=S.classSubjects[cls]||[];
+    const stages=CURRICULUM_STAGES[S.curriculum]||CURRICULUM_STAGES.nigerian;
+    setC(tabHtml+`
+      <div class="g2">
+        <div>
+          <div class="card mb-16">
+            <div class="card-title">Select Class</div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px">
+              ${[...S.classesSecondary,...S.classesPrimary].map(c=>`<span class="cls-badge-edit" style="cursor:pointer;${c===cls?'background:var(--pri);color:white':''}" onclick="S.selectedAcadClass='${c}';renderAcademics('classes')">${c}<span style="font-size:9px;opacity:.7">(${(S.classSubjects[c]||[]).length})</span></span>`).join('')}
+            </div>
+          </div>
+          <div class="card">
+            <div class="sh"><div class="card-title" style="margin-bottom:0">Subjects assigned to ${cls}</div><span class="chip chip-blue">${assigned.length} subjects</span></div>
+            ${assigned.length===0?`<div style="text-align:center;padding:28px;color:var(--out)"><span class="mi" style="font-size:36px;opacity:.4;display:block;margin-bottom:8px">menu_book</span><div style="font-size:13px">No subjects assigned yet — pick from the catalogue on the right</div></div>`:
+            `<div style="display:flex;flex-wrap:wrap;gap:7px">
+              ${assigned.map(sub=>{
+                const cat=Object.entries(SUBJECT_CATALOGUE).find(([,list])=>list.includes(sub))?.[0]||'Other';
+                const teacher=S.teachers.find(t=>(t.subjects||[]).includes(sub)&&(t.classes||[]).includes(cls));
+                return `<div style="display:flex;align-items:center;gap:7px;padding:8px 12px;border-radius:10px;background:var(--surf-1);border:1px solid var(--out-var)">
+                  <span class="mi" style="font-size:15px;color:var(--pri)">${subjectIcon(cat)}</span>
+                  <div><div style="font-size:12px;font-weight:600">${sub}</div>${teacher?`<div style="font-size:9px;color:var(--out)">${teacher.name}</div>`:`<div style="font-size:9px;color:var(--ter)">No teacher assigned</div>`}</div>
+                  <span class="mi" style="font-size:15px;color:var(--out);cursor:pointer;margin-left:4px" onclick="removeClassSubject('${cls}','${sub}')" title="Remove">close</span>
+                </div>`;
+              }).join('')}
+            </div>`}
+          </div>
+        </div>
+        <div>
+          <div class="card mb-16" style="background:var(--surf-1)">
+            <div style="font-size:13px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:7px"><span class="mi" style="font-size:16px;color:var(--pri)">auto_awesome</span>Suggested for ${S.curriculum.charAt(0).toUpperCase()+S.curriculum.slice(1)} curriculum</div>
+            <div style="font-size:11px;color:var(--out);margin-bottom:10px">Click a stage to add all its subjects to ${cls} at once</div>
+            ${Object.entries(stages).map(([stage,subs])=>`
+              <div style="margin-bottom:10px">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+                  <span style="font-size:11px;font-weight:700;color:var(--txt2)">${stage}</span>
+                  <button class="btn btn-sec btn-sm" style="padding:3px 9px;font-size:10px" onclick="addStageSubjects('${cls}','${stage}')">+ Add all (${subs.length})</button>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:4px">
+                  ${subs.slice(0,8).map(s=>`<span class="chip ${assigned.includes(s)?'chip-green':'chip-out'}" style="font-size:9px">${s}</span>`).join('')}
+                  ${subs.length>8?`<span class="chip chip-out" style="font-size:9px">+${subs.length-8} more</span>`:''}
+                </div>
+              </div>`).join('')}
+          </div>
+          <div class="card">
+            <div class="card-title">Add individual subject</div>
+            <div class="fg"><label class="fl">Search catalogue</label><input class="fi" id="acad-search" placeholder="e.g. Further Mathematics" oninput="filterAcadSearch(this.value)"></div>
+            <div id="acad-search-results" style="display:flex;flex-wrap:wrap;gap:5px;max-height:220px;overflow-y:auto"></div>
+          </div>
+        </div>
+      </div>`);
+  }
+
+  // ── TAB 2: SUBJECT CATALOGUE BROWSER ──
+  else if(activeTab==='catalogue'){
+    setC(tabHtml+`
+      <div class="card mb-16">
+        <div class="fg" style="margin-bottom:0"><label class="fl">Search ${ALL_SUBJECTS.length} subjects</label><input class="fi" id="cat-search" placeholder="Search by subject name…" oninput="filterCatalogue(this.value)"></div>
+      </div>
+      <div id="catalogue-body">${renderCatalogueBody('')}</div>`);
+  }
+
+  // ── TAB 3: SEATING PLANS ──
+  else{
+    renderSeatingTab();
+  }
+}
+
+function subjectIcon(category){
+  return {'Core Academic':'science','Humanities':'public','Languages':'translate','Business & Commerce':'storefront','Technology':'memory','Creative Arts':'palette','Vocational & Technical':'construction','Health & Wellbeing':'fitness_center'}[category]||'menu_book';
+}
+
+function renderCatalogueBody(query){
+  const q=(query||'').toLowerCase();
+  return Object.entries(SUBJECT_CATALOGUE).map(([cat,subs])=>{
+    const filtered=q?subs.filter(s=>s.toLowerCase().includes(q)):subs;
+    if(!filtered.length)return'';
+    return `<div class="card mb-16">
+      <div class="sh"><div class="card-title" style="margin-bottom:0;display:flex;align-items:center;gap:8px"><span class="mi" style="font-size:18px;color:var(--pri)">${subjectIcon(cat)}</span>${cat}</div><span class="chip chip-blue">${filtered.length} subjects</span></div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        ${filtered.map(s=>`<span class="chip chip-out" style="font-size:11px;padding:5px 11px">${s}</span>`).join('')}
+      </div>
+    </div>`;
+  }).join('')||`<div class="card" style="text-align:center;padding:32px;color:var(--out)">No subjects match "${query}"</div>`;
+}
+function filterCatalogue(q){document.getElementById('catalogue-body').innerHTML=renderCatalogueBody(q)}
+
+function filterAcadSearch(q){
+  const cls=S.selectedAcadClass||S.classesSecondary[0];
+  const assigned=S.classSubjects[cls]||[];
+  const ql=(q||'').toLowerCase();
+  const results=q?ALL_SUBJECTS.filter(s=>s.toLowerCase().includes(ql)&&!assigned.includes(s)).slice(0,20):[];
+  document.getElementById('acad-search-results').innerHTML=results.map(s=>`<span class="chip chip-blue" style="font-size:11px;cursor:pointer;padding:5px 11px" onclick="addClassSubject('${cls}','${s.replace(/'/g,"\\\\'")}')"><span class="mi" style="font-size:12px;vertical-align:middle">add</span> ${s}</span>`).join('')||(q?`<div style="font-size:12px;color:var(--out)">No matches</div>`:'');
+}
+
+function addClassSubject(cls,sub){
+  if(!S.classSubjects[cls])S.classSubjects[cls]=[];
+  if(!S.classSubjects[cls].includes(sub))S.classSubjects[cls].push(sub);
+  renderAcademics('classes');toast(sub+' added to '+cls);
+}
+function removeClassSubject(cls,sub){
+  S.classSubjects[cls]=(S.classSubjects[cls]||[]).filter(s=>s!==sub);
+  renderAcademics('classes');
+}
+function addStageSubjects(cls,stage){
+  const stages=CURRICULUM_STAGES[S.curriculum]||CURRICULUM_STAGES.nigerian;
+  const subs=stages[stage]||[];
+  if(!S.classSubjects[cls])S.classSubjects[cls]=[];
+  subs.forEach(s=>{if(!S.classSubjects[cls].includes(s))S.classSubjects[cls].push(s)});
+  renderAcademics('classes');toast(`Added ${subs.length} subjects from ${stage} to ${cls}`);
+}
+
+// ════════════════════════════════════════════
+//  SEATING PLAN GENERATOR
+// ════════════════════════════════════════════
+function renderSeatingTab(){
+  const cls=S.selectedAcadClass||S.classesSecondary[0];
+  const students=S.students.filter(s=>s.class===cls);
+  if(!S.seatingPlans[cls]||S.seatingPlans[cls].length!==students.length){
+    S.seatingPlans[cls]=students.map(s=>s.id);
+  }
+  const order=S.seatingPlans[cls];
+  const cols=Math.min(5,Math.max(3,Math.ceil(Math.sqrt(students.length))));
+
+  document.getElementById('content').innerHTML=`
+    <div class="card mb-16">
+      <div class="sh"><div class="card-title" style="margin-bottom:0">Seating Plan — Select Class</div></div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        ${[...S.classesSecondary,...S.classesPrimary].map(c=>`<span class="cls-badge-edit" style="cursor:pointer;${c===cls?'background:var(--pri);color:white':''}" onclick="S.selectedAcadClass='${c}';renderAcademics('seating')">${c}</span>`).join('')}
+      </div>
+    </div>
+    <div class="card">
+      <div class="sh">
+        <div><div class="card-title" style="margin-bottom:2px">${cls} — ${students.length} students</div><div class="text-xs text-muted">Click two seats to swap students. SEN students are highlighted purple.</div></div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-sec btn-sm" onclick="shuffleSeating('${cls}')"><span class="mi" style="font-size:14px">shuffle</span>Shuffle</button>
+          <button class="btn btn-sec btn-sm" onclick="alphaSeating('${cls}')"><span class="mi" style="font-size:14px">sort_by_alpha</span>A–Z order</button>
+          <button class="btn btn-pri btn-sm" onclick="printSeating('${cls}')"><span class="mi" style="font-size:14px">print</span>Print plan</button>
+        </div>
+      </div>
+      ${students.length===0?`<div style="text-align:center;padding:32px;color:var(--out)">No students in ${cls} yet</div>`:`
+      <div id="seating-grid" style="display:grid;grid-template-columns:repeat(${cols},1fr);gap:10px;margin-top:14px;padding:16px;background:var(--surf-1);border-radius:12px">
+        ${renderSeatingGrid(cls)}
+      </div>
+      <div style="text-align:center;margin-top:12px;padding:8px;background:var(--surf-2);border-radius:8px;font-size:11px;color:var(--out)">🧑‍🏫 Front of classroom</div>`}
+    </div>`;
+}
+function renderSeatingGrid(cls){
+  const order=S.seatingPlans[cls]||[];
+  return order.map((sid,seatIdx)=>{
+    const s=S.students.find(st=>st.id===sid);
+    if(!s)return'';
+    const selected=_seatSelect===seatIdx;
+    return `<div onclick="seatClick('${cls}',${seatIdx})" style="padding:12px 8px;border-radius:10px;text-align:center;cursor:pointer;background:${selected?'var(--pri)':s.sen?'#ede9fe':'white'};border:2px solid ${selected?'var(--pri)':s.sen?'#c4b5fd':'var(--out-var)'};transition:all .12s">
+      <div class="s-av" style="margin:0 auto 6px;background:${selected?'rgba(255,255,255,.2)':s.sen?'#c4b5fd':'var(--surf-3)'};color:${selected?'white':s.sen?'#5b21b6':'var(--txt2)'}">${s.name.split(' ').map(n=>n[0]).join('').slice(0,2)}</div>
+      <div style="font-size:11px;font-weight:600;color:${selected?'white':'var(--txt)'}">${s.name.split(' ')[0]}</div>
+      <div style="font-size:9px;color:${selected?'rgba(255,255,255,.7)':'var(--out)'}">Seat ${seatIdx+1}</div>
+    </div>`;
+  }).join('');
+}
+let _seatSelect=null;
+function seatClick(cls,idx){
+  if(_seatSelect===null){_seatSelect=idx;document.getElementById('seating-grid').innerHTML=renderSeatingGrid(cls);return}
+  if(_seatSelect===idx){_seatSelect=null;document.getElementById('seating-grid').innerHTML=renderSeatingGrid(cls);return}
+  const order=S.seatingPlans[cls];
+  [order[_seatSelect],order[idx]]=[order[idx],order[_seatSelect]];
+  _seatSelect=null;
+  document.getElementById('seating-grid').innerHTML=renderSeatingGrid(cls);
+}
+function shuffleSeating(cls){
+  const order=S.seatingPlans[cls];
+  for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]]}
+  _seatSelect=null;document.getElementById('seating-grid').innerHTML=renderSeatingGrid(cls);toast('Seating shuffled');
+}
+function alphaSeating(cls){
+  const students=S.students.filter(s=>s.class===cls).sort((a,b)=>a.name.localeCompare(b.name));
+  S.seatingPlans[cls]=students.map(s=>s.id);
+  _seatSelect=null;document.getElementById('seating-grid').innerHTML=renderSeatingGrid(cls);toast('Sorted alphabetically');
+}
+function printSeating(cls){
+  toast('Print dialog would open here — seating plan for '+cls);
+}
+
+// ════════════════════════════════════════════
 //  BIOMETRIC ATTENDANCE
 // ════════════════════════════════════════════
 function renderBiometric(){
@@ -1236,6 +1733,7 @@ function renderBiometric(){
           <div style="flex:1"><div style="font-size:12px;font-weight:600">${s.name}${s.sen?`<span class="chip chip-purple" style="font-size:9px;margin-left:4px">SEN</span>`:''}${needsGuardian?`<span class="chip chip-family" style="font-size:9px;margin-left:4px">Guardian req'd</span>`:''}</div><div style="font-size:10px;color:var(--out)">${s.admno} · ${s.fp?'<span style="color:var(--sec);font-weight:600">Enrolled</span>':'<span style="color:var(--ter)">No fingerprint</span>'}</div></div>
           <div style="display:flex;gap:5px;align-items:center">
             ${!r.in?`<span class="badge badge-absent">Absent</span><button class="btn btn-ok btn-sm" onclick="manualMark(${s.id},'in')"><span class="mi" style="font-size:13px">login</span>In</button>`:!r.out?`<span class="badge badge-in">In — ${r.in}</span><button class="btn btn-sec btn-sm" onclick="manualMark(${s.id},'out')"><span class="mi" style="font-size:13px">logout</span>Out</button>`:`<span class="badge badge-out">Out — ${r.out}</span>`}
+            <button class="btn btn-sec btn-sm btn-icon" onclick="openBehaviourModal(${s.id})" title="Award behaviour points"><span class="mi" style="font-size:14px;color:#7C3AED">military_tech</span></button>
           </div>
         </div>`;
       }).join('')}
@@ -1516,6 +2014,128 @@ function saveFamMember(){
 }
 
 // ════════════════════════════════════════════
+//  BEHAVIOUR & MERIT SYSTEM
+// ════════════════════════════════════════════
+const BEHAVIOUR_REASONS = {
+  positive:['Excellent class participation','Helped a classmate','Outstanding homework','Improved effort','Acts of kindness','Leadership','Attendance & punctuality','Representing the school','Creativity & initiative'],
+  negative:['Late to class without note','Disruptive behaviour','Uniform infraction','Incomplete homework','Disrespect to staff/peers','Unauthorised mobile phone use','Not following instructions'],
+};
+
+function renderBehaviour(){
+  const totalPos=S.behaviourLog.filter(b=>b.type==='positive').reduce((a,b)=>a+b.points,0);
+  const totalNeg=S.behaviourLog.filter(b=>b.type==='negative').reduce((a,b)=>a+Math.abs(b.points),0);
+  const today=S.behaviourLog.filter(b=>b.date===TODAY).length;
+
+  // Leaderboard — net points per student
+  const netByStudent={};
+  S.behaviourLog.forEach(b=>{netByStudent[b.student]=(netByStudent[b.student]||0)+b.points});
+  const leaderboard=Object.entries(netByStudent).sort((a,b)=>b[1]-a[1]).slice(0,8);
+
+  setH('Behaviour & Merit','House points · positive & negative behaviour log',
+    `<button class="btn btn-pri btn-sm" onclick="openBehaviourModal()"><span class="mi" style="font-size:15px">add_reaction</span>Award Points</button>`);
+
+  setC(`
+    <div class="stat-grid mb-20">
+      <div class="stat-card"><span class="chip chip-green" style="margin-bottom:6px"><span class="mi" style="font-size:12px">thumb_up</span>Positive</span><div class="stat-num">+${totalPos}</div><div class="stat-lbl">Total positive points</div></div>
+      <div class="stat-card"><span class="chip chip-red" style="margin-bottom:6px"><span class="mi" style="font-size:12px">thumb_down</span>Negative</span><div class="stat-num">-${totalNeg}</div><div class="stat-lbl">Total negative points</div></div>
+      <div class="stat-card"><span class="chip chip-blue" style="margin-bottom:6px">Today</span><div class="stat-num">${today}</div><div class="stat-lbl">Entries logged today</div></div>
+      <div class="stat-card"><span class="chip chip-purple" style="margin-bottom:6px">Net</span><div class="stat-num">${totalPos-totalNeg>=0?'+':''}${totalPos-totalNeg}</div><div class="stat-lbl">School-wide net</div></div>
+    </div>
+
+    <div class="g2 mb-20">
+      <div class="card">
+        <div class="card-title">Leaderboard — Top Students</div>
+        ${leaderboard.length===0?`<div style="text-align:center;padding:24px;color:var(--out);font-size:13px">No points awarded yet</div>`:leaderboard.map(([name,pts],i)=>{
+          const stu=S.students.find(s=>s.name===name);
+          return`<div class="s-row"><span style="font-size:13px;font-weight:800;color:${i<3?'var(--pri)':'var(--out)'};width:20px;font-family:var(--fh)">${i+1}</span><div class="s-av">${name.split(' ').map(n=>n[0]).join('').slice(0,2)}</div><div style="flex:1"><div style="font-size:12px;font-weight:600">${name}</div><div style="font-size:10px;color:var(--out)">${stu?stu.class:''}</div></div><span class="chip ${pts>=0?'chip-green':'chip-red'}" style="font-size:12px;font-weight:800">${pts>=0?'+':''}${pts}</span></div>`;
+        }).join('')}
+      </div>
+      <div class="card" style="background:var(--surf-1)">
+        <div style="font-size:13px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:7px"><span class="mi" style="font-size:16px;color:#25D366">chat</span>What parents receive</div>
+        <div style="border-radius:12px;overflow:hidden;border:1px solid var(--out-var)">
+          <div style="padding:8px 12px;background:var(--sec);font-size:11px;font-weight:700;color:white;display:flex;align-items:center;gap:6px"><span class="mi" style="font-size:14px">military_tech</span>Positive Behaviour</div>
+          <div style="padding:10px;background:#ECE5DD"><div style="background:white;border-radius:8px;padding:10px 12px;font-size:10.5px;color:#111;line-height:1.6">Good afternoon Mrs Okonkwo,
+
+Great news! <b>Adaeze Okonkwo</b> (SS2A) received <b>+5 merit points</b> today for: "Excellent class participation" — Mathematics.
+
+Running total this term: <b>23 points</b>
+
+EduCall – Sunshine Secondary School</div><div style="text-align:right;margin-top:3px;font-size:9px;color:#667781">✓✓ Delivered</div></div>
+        </div>
+        <div style="margin-top:12px;padding:10px 12px;background:white;border-radius:9px;font-size:11px;color:var(--out)">
+          <span class="mi" style="font-size:13px;vertical-align:middle;color:var(--pri)">info</span>
+          Each award fires via the same multi-channel notification pipeline as attendance alerts (WhatsApp/SMS/Email per parent preference).
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="padding:0;overflow:hidden">
+      <div style="padding:13px 16px;border-bottom:1px solid var(--surf-hi);display:flex;align-items:center;justify-content:space-between">
+        <div style="font-family:var(--fh);font-size:14px;font-weight:700">Behaviour Log</div>
+        <select class="fs" style="width:auto;font-size:11px" onchange="filterBehaviour(this.value)">
+          <option value="">All entries</option><option value="positive">Positive only</option><option value="negative">Negative only</option>
+        </select>
+      </div>
+      <div class="tw"><table>
+        <thead><tr><th>Student</th><th>Class</th><th>Type</th><th>Points</th><th>Reason</th><th>Subject</th><th>Time</th><th>By</th></tr></thead>
+        <tbody id="behaviour-tbody">${renderBehaviourRows(S.behaviourLog)}</tbody>
+      </table></div>
+    </div>`);
+}
+function renderBehaviourRows(log){
+  if(!log.length)return`<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--out)">No entries yet</td></tr>`;
+  return [...log].sort((a,b)=>b.id-a.id).map(b=>`<tr>
+    <td style="font-weight:600">${b.student}</td>
+    <td><span class="chip chip-blue">${b.class}</span></td>
+    <td><span class="chip ${b.type==='positive'?'chip-green':'chip-red'}"><span class="mi" style="font-size:11px">${b.type==='positive'?'thumb_up':'thumb_down'}</span>${b.type}</span></td>
+    <td style="font-weight:800;color:${b.points>=0?'var(--sec)':'var(--ter)'}">${b.points>=0?'+':''}${b.points}</td>
+    <td style="font-size:11px">${b.reason}</td>
+    <td style="font-size:11px;color:var(--out)">${b.subject||'—'}</td>
+    <td style="font-size:11px;color:var(--out)">${b.date===TODAY?'Today':b.date} · ${b.time}</td>
+    <td style="font-size:11px;color:var(--out)">${b.by}</td>
+  </tr>`).join('');
+}
+function filterBehaviour(type){
+  const filtered=type?S.behaviourLog.filter(b=>b.type===type):S.behaviourLog;
+  document.getElementById('behaviour-tbody').innerHTML=renderBehaviourRows(filtered);
+}
+
+let _behType='positive';
+function openBehaviourModal(studentId){
+  _behType='positive';
+  const sel=document.getElementById('bm-student');
+  sel.innerHTML=S.students.map(s=>`<option value="${s.id}" ${s.id===studentId?'selected':''}>${s.name} — ${s.class}</option>`).join('');
+  setBehType('positive');
+  document.getElementById('bm-points').value=5;
+  document.getElementById('bm-reason-custom').value='';
+  openModal('modal-behaviour');
+}
+function setBehType(type){
+  _behType=type;
+  document.getElementById('bt-positive').style.background=type==='positive'?'var(--sec)':'var(--surf-2)';
+  document.getElementById('bt-positive').style.color=type==='positive'?'white':'var(--txt2)';
+  document.getElementById('bt-negative').style.background=type==='negative'?'var(--ter)':'var(--surf-2)';
+  document.getElementById('bt-negative').style.color=type==='negative'?'white':'var(--txt2)';
+  document.getElementById('bm-points').value=type==='positive'?5:-2;
+  document.getElementById('bm-reasons').innerHTML=BEHAVIOUR_REASONS[type].map(r=>`<span class="chip ${type==='positive'?'chip-green':'chip-red'}" style="cursor:pointer;font-size:10px" onclick="document.getElementById('bm-reason-custom').value='${r.replace(/'/g,"\\\\'")}'">${r}</span>`).join('');
+}
+function saveBehaviour(){
+  const sid=parseInt(document.getElementById('bm-student').value);
+  const stu=S.students.find(s=>s.id===sid);
+  if(!stu)return;
+  const points=parseInt(document.getElementById('bm-points').value)||(_behType==='positive'?1:-1);
+  const reason=document.getElementById('bm-reason-custom').value.trim()||(_behType==='positive'?'Positive behaviour':'Negative behaviour');
+  const now=new Date();
+  const entry={id:S.nextBehaviourId++,student:stu.name,class:stu.class,type:_behType,points:_behType==='positive'?Math.abs(points):-Math.abs(points),reason,subject:S.selectedSubject||'',date:TODAY,time:now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}),by:S.user.name};
+  S.behaviourLog.push(entry);
+  // Fire a parent notification
+  S.alerts.unshift({id:Date.now(),student:stu.name,class:stu.class,subject:entry.subject,type:'behaviour',date:TODAY,parent:stu.parent,status:'sent',behaviourType:_behType,points:entry.points,reason});
+  closeModal('modal-behaviour');
+  if(S.view==='behaviour')renderBehaviour();
+  toast(`${_behType==='positive'?'+':''}${entry.points} points → ${stu.name}. Parent notified.`,_behType==='positive'?'ok':'err');
+}
+
+// ════════════════════════════════════════════
 //  REPORTS
 // ════════════════════════════════════════════
 function renderReports(){
@@ -1568,13 +2188,26 @@ function renderAlerts(){
     <div class="card" style="padding:0;overflow:hidden">
       <div style="padding:13px 16px;border-bottom:1px solid var(--surf-hi);font-family:var(--fh);font-size:14px;font-weight:700">All Parent Alerts</div>
       <div class="tw"><table>
-        <thead><tr><th>Student</th><th>Class</th><th>Type</th><th>Details</th><th>Parent</th><th>Date</th><th>Status</th></tr></thead>
+        <thead><tr><th>Student</th><th>Class</th><th>Type</th><th>Details</th><th>Parent</th><th>Date</th><th>Status</th><th>Parent Response</th></tr></thead>
         <tbody>${S.alerts.map(a=>{
-          const typeChip={absent:`<span class="badge badge-absent" style="font-size:10px">Absent</span>`,late:`<span class="badge badge-late" style="font-size:10px">Late</span>`,equipment:`<span class="badge" style="background:#ede9fe;color:#5b21b6;font-size:10px">Equipment</span>`,family:`<span class="badge badge-family" style="font-size:10px">Family</span>`}[a.type]||`<span class="badge badge-out">${a.type}</span>`;
-          return`<tr><td style="font-weight:600">${a.student}${a.sen?`<span class="chip chip-purple" style="font-size:9px;margin-left:3px">SEN</span>`:''}</td><td><span class="chip chip-blue">${a.class}</span></td><td>${typeChip}</td><td style="font-size:11px">${a.type==='equipment'&&a.missingEquipment?'Missing: '+a.missingEquipment.join(', '):'—'}</td><td style="font-size:11px">${a.parent}</td><td style="font-size:11px;color:var(--out)">${a.date}</td><td><span class="badge ${a.status==='sent'?'badge-in':'badge-late'}" style="font-size:10px">${a.status}</span></td></tr>`;
+          const typeChip={absent:`<span class="badge badge-absent" style="font-size:10px">Absent</span>`,late:`<span class="badge badge-late" style="font-size:10px">Late</span>`,equipment:`<span class="badge" style="background:#ede9fe;color:#5b21b6;font-size:10px">Equipment</span>`,family:`<span class="badge badge-family" style="font-size:10px">Family</span>`,behaviour:`<span class="badge ${a.behaviourType==='positive'?'badge-in':'badge-absent'}" style="font-size:10px"><span class="mi" style="font-size:11px">${a.behaviourType==='positive'?'thumb_up':'thumb_down'}</span>Behaviour</span>`}[a.type]||`<span class="badge badge-out">${a.type}</span>`;
+          let details='—';
+          if(a.type==='equipment'&&a.missingEquipment) details='Missing: '+a.missingEquipment.join(', ');
+          else if(a.type==='behaviour') details=`${a.points>=0?'+':''}${a.points} pts — ${a.reason}`;
+          const ackHtml=a.ack
+            ?`<span class="chip chip-green" style="font-size:10px"><span class="mi" style="font-size:11px">check</span>${a.ack}</span>`
+            :`<button class="btn btn-sec btn-sm" style="font-size:10px;padding:4px 9px" onclick="acknowledgeAlert(${a.id})">Mark as seen</button>`;
+          return`<tr><td style="font-weight:600">${a.student}${a.sen?`<span class="chip chip-purple" style="font-size:9px;margin-left:3px">SEN</span>`:''}</td><td><span class="chip chip-blue">${a.class}</span></td><td>${typeChip}</td><td style="font-size:11px">${details}</td><td style="font-size:11px">${a.parent}</td><td style="font-size:11px;color:var(--out)">${a.date}</td><td><span class="badge ${a.status==='sent'?'badge-in':'badge-late'}" style="font-size:10px">${a.status}</span></td><td>${ackHtml}</td></tr>`;
         }).join('')}</tbody>
       </table></div>
     </div>`);
+}
+function acknowledgeAlert(id){
+  const a=S.alerts.find(a=>a.id===id);
+  if(!a)return;
+  a.ack='Acknowledged by '+a.parent;
+  renderAlerts();
+  toast('Marked as seen — simulates parent reply via WhatsApp');
 }
 function retryPending(){S.alerts.filter(a=>a.status==='pending').forEach(a=>a.status='sent');renderAlerts();renderNav();toast('Pending alerts retried via n8n')}
 
@@ -1600,7 +2233,7 @@ function renderSettings(activeTab){
             <div class="fg"><label class="fl">School Name</label><input class="fi" value="${S.user.school.split(',')[0]}"></div>
             <div class="fg"><label class="fl">Admin Email</label><input class="fi" type="email" value="${S.user.email}"></div>
             <div class="g2" style="gap:10px">
-              <div class="fg"><label class="fl">Country</label><select class="fs"><option>Nigeria</option><option>United Kingdom</option><option>Ghana</option><option>Kenya</option><option>South Africa</option></select></div>
+              <div class="fg"><label class="fl">Country</label><select class="fs" id="settings-country">${COUNTRIES.map(c=>`<option ${c===(S.schoolCountry||'Nigeria')?'selected':''}>${c}</option>`).join('')}</select></div>
               <div class="fg"><label class="fl">Timezone</label><select class="fs"><option>Africa/Lagos (WAT UTC+1)</option><option>Europe/London (GMT/BST)</option><option>Africa/Accra (GMT)</option><option>Africa/Nairobi (EAT UTC+3)</option></select></div>
             </div>
             <button class="btn btn-pri btn-sm" onclick="toast('School details saved')"><span class="mi" style="font-size:14px">save</span>Save Details</button>
@@ -1870,6 +2503,7 @@ let _p0=false;
 function runPhase0(){
   if(_p0)return;_p0=true;
   [0,1,2,3].forEach((i)=>setTimeout(()=>{const r=document.getElementById('p0-'+i);if(r){const ic=r.querySelector('.mi');ic.textContent='check_box';ic.style.color='var(--sec)'}},i*700));
+  setTimeout(()=>{_p0Done=true;toast('Phase 0 hardware validation complete')},2400);
 }
 function saveCfg(){toast('Webhooks saved')}
 function saveWebhooks(){closeModal('modal-webhook');toast('Webhooks saved')}
@@ -1979,8 +2613,106 @@ function confirmEquipment(){
 }
 
 // ════════════════════════════════════════════
-//  FAMILY PORTAL
+//  STUDENT PORTAL
 // ════════════════════════════════════════════
+let _stuClockTimer;
+function startStudentClock(){
+  updateStudentClock();clearInterval(_stuClockTimer);_stuClockTimer=setInterval(updateStudentClock,1000);
+}
+function updateStudentClock(){
+  const now=new Date();
+  const ce=document.getElementById('stu-clock'),de=document.getElementById('stu-date');
+  if(ce)ce.textContent=now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  if(de)de.textContent=now.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
+}
+
+function renderStudentPortal(){
+  const stu=S.studentUser;
+  if(!stu)return;
+  document.getElementById('stu-title').textContent='Hi, '+stu.name.split(' ')[0]+'! 👋';
+  document.getElementById('stu-sub').textContent=`${stu.class} · Admission No. ${stu.admno}`;
+
+  // Attendance summary — count today's check-ins across all scan keys for this student
+  let daysIn=0,daysTotal=0;
+  Object.entries(S.scans).forEach(([key,rec])=>{
+    if(key.endsWith('-'+stu.id)){daysTotal++;if(rec.in)daysIn++;}
+  });
+  const attRate=daysTotal>0?Math.round((daysIn/daysTotal)*100):100;
+
+  // Behaviour points for this student
+  const myBehaviour=S.behaviourLog.filter(b=>b.student===stu.name);
+  const netPoints=myBehaviour.reduce((a,b)=>a+b.points,0);
+  const positives=myBehaviour.filter(b=>b.type==='positive').length;
+  const negatives=myBehaviour.filter(b=>b.type==='negative').length;
+
+  // Today's timetable
+  const day=new Date().toLocaleDateString('en-US',{weekday:'long'});
+  const todaySlots=S.timetable.filter(t=>t.class===stu.class&&t.day===day);
+
+  // Assigned subjects for this class
+  const mySubjects=S.classSubjects[stu.class]||[];
+
+  // Authorised family collectors (for primary/SEN students)
+  const isPrimary=stu.isPrimary||CLASSES_PRI.includes(stu.class);
+  const collectors=S.famMembers.filter(fm=>(fm.children||[]).includes(stu.name));
+
+  document.getElementById('student-content').innerHTML=`
+    <div class="stat-grid mb-20">
+      <div class="stat-card"><span class="chip chip-green" style="margin-bottom:6px"><span class="mi" style="font-size:12px">fact_check</span>Attendance</span><div class="stat-num">${attRate}%</div><div class="stat-lbl">${daysIn} of ${daysTotal||0} sessions</div></div>
+      <div class="stat-card"><span class="chip ${netPoints>=0?'chip-green':'chip-red'}" style="margin-bottom:6px"><span class="mi" style="font-size:12px">military_tech</span>Merit Points</span><div class="stat-num">${netPoints>=0?'+':''}${netPoints}</div><div class="stat-lbl">Net points this term</div></div>
+      <div class="stat-card"><span class="chip chip-blue" style="margin-bottom:6px"><span class="mi" style="font-size:12px">thumb_up</span>Positives</span><div class="stat-num">${positives}</div><div class="stat-lbl">Positive entries</div></div>
+      <div class="stat-card"><span class="chip chip-amber" style="margin-bottom:6px"><span class="mi" style="font-size:12px">menu_book</span>Subjects</span><div class="stat-num">${mySubjects.length}</div><div class="stat-lbl">Subjects this year</div></div>
+    </div>
+
+    <div class="g2 mb-20">
+      <div class="card">
+        <div class="card-title">Today's Timetable — ${day}</div>
+        ${todaySlots.length===0?`<div style="text-align:center;padding:24px;color:var(--out);font-size:13px">No sessions scheduled today</div>`:todaySlots.map(t=>`
+          <div class="s-row"><div class="s-av"><span class="mi" style="font-size:15px">menu_book</span></div><div style="flex:1"><div style="font-size:12px;font-weight:600">${t.subject}</div><div style="font-size:10px;color:var(--out)">${t.period} · ${t.time}</div></div><span style="font-size:11px;color:var(--out)">${t.teacher}</span></div>`).join('')}
+      </div>
+      <div class="card">
+        <div class="card-title">My Subjects — ${stu.class}</div>
+        ${mySubjects.length===0?`<div style="text-align:center;padding:24px;color:var(--out);font-size:13px">Subjects not yet configured for your class</div>`:`
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          ${mySubjects.map(s=>{
+            const cat=Object.entries(SUBJECT_CATALOGUE).find(([,list])=>list.includes(s))?.[0]||'Other';
+            return `<span class="chip chip-blue" style="font-size:11px;padding:6px 12px"><span class="mi" style="font-size:13px;vertical-align:middle">${subjectIcon(cat)}</span> ${s}</span>`;
+          }).join('')}
+        </div>`}
+      </div>
+    </div>
+
+    <div class="g2 mb-20">
+      <div class="card">
+        <div class="sh"><div class="card-title" style="margin-bottom:0">My Behaviour & Merit Log</div><span class="chip ${netPoints>=0?'chip-green':'chip-red'}">${netPoints>=0?'+':''}${netPoints} net</span></div>
+        ${myBehaviour.length===0?`<div style="text-align:center;padding:24px;color:var(--out);font-size:13px">No entries yet — keep up the great work!</div>`:[...myBehaviour].sort((a,b)=>b.id-a.id).map(b=>`
+          <div class="s-row"><div class="s-av" style="background:${b.type==='positive'?'#dcfce7':'#fee2e2'};color:${b.type==='positive'?'#166534':'#991b1b'}"><span class="mi" style="font-size:16px">${b.type==='positive'?'thumb_up':'thumb_down'}</span></div><div style="flex:1"><div style="font-size:12px;font-weight:600">${b.reason}</div><div style="font-size:10px;color:var(--out)">${b.subject||''} · ${b.date===TODAY?'Today':b.date} ${b.time}</div></div><span class="chip ${b.points>=0?'chip-green':'chip-red'}" style="font-weight:800">${b.points>=0?'+':''}${b.points}</span></div>`).join('')}
+      </div>
+      <div class="card">
+        ${stu.sen?`
+        <div class="card-title" style="display:flex;align-items:center;gap:7px"><span class="mi" style="font-size:17px;color:#7C3AED">accessibility</span>My SEN Support</div>
+        <div style="padding:12px;border-radius:10px;border:1px solid #ddd6fe;background:#faf5ff;margin-bottom:14px">
+          <div style="font-size:12px;font-weight:700;margin-bottom:4px">${stu.senType||'Additional support'}</div>
+          <div style="font-size:11px;color:var(--out);margin-bottom:8px">Equipment checked at every check-in</div>
+          <div style="display:flex;flex-wrap:wrap;gap:5px">${(stu.equipment||[]).map(e=>`<span class="chip chip-purple" style="font-size:10px">${e}</span>`).join('')||'<span style="font-size:11px;color:var(--out)">None listed</span>'}</div>
+        </div>`:''}
+        ${isPrimary?`
+        <div class="card-title" style="display:flex;align-items:center;gap:7px"><span class="mi" style="font-size:17px;color:var(--sec)">family_restroom</span>Who can collect me</div>
+        ${collectors.length===0?`<div style="font-size:12px;color:var(--out)">No family members registered yet — ask a parent to register on the Family Portal.</div>`:collectors.map(c=>{
+          const emoji={parent:'👨',driver:'🚗',maid:'👩‍🍳',guardian:'🤝'}[c.rel]||'👤';
+          return `<div class="s-row"><div class="fam-av" style="background:${c.rel==='driver'?'#1e3a5f':c.rel==='maid'?'#1b6d24':'var(--pri)'};width:34px;height:34px;font-size:14px">${emoji}</div><div style="flex:1"><div style="font-size:12px;font-weight:600">${c.name}</div><div style="font-size:10px;color:var(--out);text-transform:capitalize">${c.rel}${c.carReg?' · '+c.carReg:''}</div></div></div>`;
+        }).join('')}`:''}
+        ${!stu.sen&&!isPrimary?`<div class="card-title">My Details</div>
+        <div style="font-size:12px;line-height:2"><b>Parent/Guardian:</b> ${stu.parent}<br><b>Class:</b> ${stu.class}<br><b>Admission No.:</b> ${stu.admno}<br><b>Fingerprint:</b> ${stu.fp?'<span style="color:var(--sec)">Enrolled ✓</span>':'<span style="color:var(--ter)">Not yet enrolled</span>'}</div>`:''}
+      </div>
+    </div>
+
+    <div class="card" style="background:var(--surf-1);text-align:center">
+      <div style="font-size:12px;color:var(--out)"><span class="mi" style="font-size:14px;vertical-align:middle;color:var(--pri)">info</span> This is a read-only view of your attendance, subjects, and behaviour record. Contact your class teacher if anything looks incorrect.</div>
+    </div>`;
+}
+
+
 let _famClockTimer;
 function startFamClock(){
   updateFamClock();clearInterval(_famClockTimer);_famClockTimer=setInterval(updateFamClock,1000);
@@ -2067,6 +2799,7 @@ const MIG = {
   headers: [],       // CSV column headers found
   colMap: {},        // { educallField: csvColumnIndex }
   importResult: null,
+  filename: '',      // source filename for job history
   step: 1,
 };
 
@@ -2352,6 +3085,7 @@ function handleFileSelect(input) {
 }
 
 function processFile(file) {
+  MIG.filename=file.name;
   const reader=new FileReader();
   const isCSV=file.name.toLowerCase().endsWith('.csv');
   reader.onload=function(e){
@@ -2612,6 +3346,13 @@ function executeImport() {
     }
 
     MIG.importResult={imported:toImport.length,skipped:MIG.mapped.length-toImport.length};
+    // Record this import as a job in history
+    S.importJobs.unshift({
+      id:Date.now(),type:MIG.type,filename:MIG.filename||'Pasted data',
+      date:new Date().toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}),
+      total:MIG.mapped.length,imported:toImport.length,skipped:MIG.mapped.length-toImport.length,
+      status:'completed',
+    });
     renderNav();
 
     // Show success
@@ -2642,6 +3383,53 @@ function exportImportedCSV(){
 }
 
 // ════════════════════════════════════════════
+//  BULK UPLOAD JOBS — import history
+// ════════════════════════════════════════════
+function renderJobs(){
+  setH('Bulk Upload Jobs','History of data migration imports',
+    `<button class="btn btn-pri btn-sm" onclick="navTo('migration')"><span class="mi" style="font-size:15px">upload_file</span>New Import</button>`);
+
+  if(!S.importJobs.length){
+    setC(`<div class="card" style="text-align:center;padding:48px">
+      <span class="mi" style="font-size:48px;color:var(--out);opacity:.4;display:block;margin-bottom:14px">history</span>
+      <div style="font-size:15px;font-weight:700;color:var(--out);margin-bottom:6px">No imports yet</div>
+      <div style="font-size:13px;color:var(--out);margin-bottom:18px">Every CSV/Excel import you run will appear here with a record of what was imported, skipped, and when.</div>
+      <button class="btn btn-pri" onclick="navTo('migration')"><span class="mi" style="font-size:15px">upload_file</span>Go to Data Migration</button>
+    </div>`);
+    return;
+  }
+
+  const totalImported=S.importJobs.reduce((a,j)=>a+j.imported,0);
+  const totalSkipped=S.importJobs.reduce((a,j)=>a+j.skipped,0);
+
+  setC(`
+    <div class="stat-grid mb-20">
+      <div class="stat-card"><span class="chip chip-blue" style="margin-bottom:6px">Jobs</span><div class="stat-num">${S.importJobs.length}</div><div class="stat-lbl">Total import jobs</div></div>
+      <div class="stat-card"><span class="chip chip-green" style="margin-bottom:6px">Imported</span><div class="stat-num">${totalImported}</div><div class="stat-lbl">Records imported</div></div>
+      <div class="stat-card"><span class="chip chip-amber" style="margin-bottom:6px">Skipped</span><div class="stat-num">${totalSkipped}</div><div class="stat-lbl">Rows skipped (errors)</div></div>
+      <div class="stat-card"><span class="chip chip-purple" style="margin-bottom:6px">Last run</span><div class="stat-num" style="font-size:1.1rem">${S.importJobs[0].date.split(',')[0]}</div><div class="stat-lbl">Most recent import</div></div>
+    </div>
+    <div class="card" style="padding:0;overflow:hidden">
+      <div class="tw"><table>
+        <thead><tr><th>Date</th><th>Type</th><th>Source File</th><th>Total Rows</th><th>Imported</th><th>Skipped</th><th>Status</th><th></th></tr></thead>
+        <tbody>${S.importJobs.map(j=>`<tr>
+          <td style="font-size:11px;color:var(--out)">${j.date}</td>
+          <td><span class="chip ${j.type==='students'?'chip-blue':'chip-purple'}"><span class="mi" style="font-size:11px">${j.type==='students'?'groups':'school'}</span>${j.type}</span></td>
+          <td style="font-size:12px;font-family:monospace">${j.filename}</td>
+          <td>${j.total}</td>
+          <td style="color:var(--sec);font-weight:700">${j.imported}</td>
+          <td style="color:${j.skipped>0?'var(--ter)':'var(--out)'};font-weight:${j.skipped>0?'700':'400'}">${j.skipped}</td>
+          <td><span class="badge badge-in" style="font-size:10px"><span class="mi" style="font-size:11px">check_circle</span>${j.status}</span></td>
+          <td><button class="btn btn-sec btn-sm" onclick="navTo('${j.type}')">View →</button></td>
+        </tr>`).join('')}</tbody>
+      </table></div>
+    </div>
+    <div class="card mt-16" style="background:var(--surf-1)">
+      <div style="font-size:12px;color:var(--out)"><span class="mi" style="font-size:14px;vertical-align:middle;color:var(--pri)">info</span> Job history is kept for your records. Re-run an import from Data Migration if you need to add more records or correct skipped rows.</div>
+    </div>`);
+}
+
+// ════════════════════════════════════════════
 //  INIT
 // ════════════════════════════════════════════
 document.querySelectorAll('.modal-bg').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open')}));
@@ -2649,6 +3437,12 @@ document.addEventListener('DOMContentLoaded',()=>{
   pickRole('admin');
   // Restore webhooks
   try{const w=localStorage.getItem('educall_webhooks');if(w)Object.assign(S.webhooks,JSON.parse(w))}catch(e){}
+  // Populate registration country dropdown + initial region/tier lists
+  const rc=document.getElementById('r-country');
+  if(rc){
+    rc.innerHTML=COUNTRIES.map(c=>`<option ${c==='Nigeria'?'selected':''}>${c}</option>`).join('');
+    onCountryChange();
+  }
 });
 </script>
 </body>
