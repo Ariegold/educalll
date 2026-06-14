@@ -49,12 +49,15 @@ body{font-family:var(--fb);background:var(--surf);color:var(--txt);min-height:10
 .shell{display:flex;height:100vh;overflow:hidden}
 
 /* ── SIDEBAR ── */
-.sidebar{width:248px;flex-shrink:0;background:var(--surf-1);display:flex;flex-direction:column;overflow-y:auto;border-right:1px solid var(--out-var)}
+.sidebar{width:248px;flex-shrink:0;background:var(--surf-1);display:flex;flex-direction:column;overflow-y:auto;border-right:1px solid var(--out-var);transition:transform .25s ease}
 .sb-logo{padding:24px 18px 18px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--surf-hi)}
 .sb-mark{width:36px;height:36px;border-radius:10px;background:var(--grad);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .sb-mark svg{width:20px;height:20px;stroke:white;fill:none;stroke-width:2.2}
 .sb-name{font-family:var(--fh);font-weight:800;font-size:18px;color:var(--pri);letter-spacing:-.02em}
 .sb-school{font-size:10px;color:var(--out);font-weight:500;margin-top:1px}
+.sb-close{display:none;margin-left:auto;background:none;border:none;cursor:pointer;color:var(--out);padding:4px}
+.sb-hamburger{display:none;background:none;border:none;cursor:pointer;color:var(--txt);padding:6px;margin-right:4px;flex-shrink:0;align-items:center}
+.sb-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:40}
 .sb-nav{padding:8px 0;flex:1}
 .sb-section{padding:10px 16px 4px;font-size:10px;font-weight:700;color:var(--out);text-transform:uppercase;letter-spacing:.08em}
 .nav-btn{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:8px;margin:1px 8px;color:var(--txt2);font-size:12.5px;font-weight:500;cursor:pointer;border:none;background:transparent;width:calc(100% - 16px);text-align:left;position:relative;transition:background .12s;font-family:var(--fb)}
@@ -251,10 +254,15 @@ tr:hover td{background:var(--surf-hi)}
 .cls-badge-edit:hover{border-color:var(--pri);color:var(--pri);background:rgba(0,52,97,.06)}
 .cls-badge-edit input{background:none;border:none;outline:none;font-size:11px;font-weight:600;font-family:var(--fb);color:inherit;width:52px;min-width:32px;text-align:center}
 @media(max-width:768px){
-  .sidebar{display:none}
+  .sidebar{position:fixed;top:0;left:0;height:100vh;z-index:50;transform:translateX(-100%);box-shadow:2px 0 16px rgba(0,0,0,.15)}
+  .sidebar.open{transform:translateX(0)}
+  .sb-backdrop.open{display:block}
+  .sb-close{display:block}
+  .sb-hamburger{display:flex}
   .stat-grid{grid-template-columns:repeat(2,1fr)}
   .g2{grid-template-columns:1fr}
   .content{padding:14px}
+  .topbar{padding:14px 14px 0}
 }
 </style>
 </head>
@@ -411,11 +419,14 @@ tr:hover td{background:var(--surf-hi)}
 ═══════════════════════════════════ -->
 <div id="pg-app" class="page">
 <div class="shell">
+  <!-- Mobile sidebar backdrop -->
+  <div class="sb-backdrop" id="sb-backdrop" onclick="toggleSidebar(false)"></div>
   <!-- Sidebar -->
-  <aside class="sidebar">
+  <aside class="sidebar" id="app-sidebar">
     <div class="sb-logo">
       <div class="sb-mark"><svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></div>
       <div><div class="sb-name">EduCall</div><div class="sb-school" id="sb-school">School</div></div>
+      <button class="sb-close" onclick="toggleSidebar(false)" aria-label="Close menu"><span class="mi" style="font-size:22px">close</span></button>
     </div>
     <nav class="sb-nav" id="sidebar-nav"></nav>
     <div class="sb-foot">
@@ -428,7 +439,9 @@ tr:hover td{background:var(--surf-hi)}
   </aside>
   <!-- Main -->
   <div class="main" id="main-area">
-    <div class="topbar"><div><div class="tb-title" id="tb-title">Dashboard</div><div class="tb-sub" id="tb-sub"></div></div><div class="tb-actions" id="tb-actions"></div></div>
+    <div class="topbar">
+      <button class="sb-hamburger" onclick="toggleSidebar(true)" aria-label="Open menu"><span class="mi" style="font-size:24px">menu</span></button>
+      <div><div class="tb-title" id="tb-title">Dashboard</div><div class="tb-sub" id="tb-sub"></div></div><div class="tb-actions" id="tb-actions"></div></div>
     <div class="content" id="content"></div>
   </div>
 </div>
@@ -1349,6 +1362,13 @@ function navTo(v){
   const map={dashboard:renderDashboard,timetable:renderTimetable,academics:renderAcademics,biometric:renderBiometric,students:renderStudents,teachers:renderTeachers,enrolment:renderEnrolment,family:renderFamilyAdmin,behaviour:renderBehaviour,reports:renderReports,alerts:renderAlerts,migration:renderMigration,jobs:renderJobs,settings:renderSettings};
   if(map[v])map[v]();
   document.getElementById('main-area').scrollTop=0;
+  toggleSidebar(false); // auto-close on mobile after navigating
+}
+function toggleSidebar(open){
+  const sb=document.getElementById('app-sidebar'),bd=document.getElementById('sb-backdrop');
+  if(!sb)return;
+  sb.classList.toggle('open',open);
+  if(bd)bd.classList.toggle('open',open);
 }
 function setH(title,sub='',actions=''){
   document.getElementById('tb-title').textContent=title;
