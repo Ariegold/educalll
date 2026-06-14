@@ -1159,8 +1159,14 @@ function doLogin(){
     showLoginErr('No account found with that email and password. New school? Register below.');
     return;
   }
-  S.user={name:school.name,email:school.email,school:school.schoolName+', '+(school.city||''),schoolId:school.schoolId,role:school.role||S.role,initials:school.name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase(),isDemo:false};
-  S.role=S.user.role;
+  // S.role is whatever the user picked on the role tabs (admin/teacher/kiosk/family).
+  // The school record's stored role is just the registering admin's title — it should
+  // NOT override the portal the user chose to sign into.
+  S.user={name:school.name,email:school.email,school:school.schoolName+', '+(school.city||''),schoolId:school.schoolId,role:S.role,initials:school.name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase(),isDemo:false};
+  S.schoolCountry=school.country;S.schoolRegion=school.region;S.schoolCity=school.city;
+  if(school.curriculum)S.curriculum=school.curriculum;
+  if(school.classesPrimary&&school.classesPrimary.length)S.classesPrimary=school.classesPrimary;
+  if(school.classesSecondary&&school.classesSecondary.length)S.classesSecondary=school.classesSecondary;
   if(S.role==='kiosk'){showPg('pg-kiosk');startKioskClock()}
   else if(S.role==='family'){showPg('pg-family');startFamClock()}
   else{showPg('pg-app');initApp()}
@@ -1319,7 +1325,7 @@ const NAV_TEACHER=[
 
 function initApp(){
   document.getElementById('sb-name').textContent=S.user.name;
-  document.getElementById('sb-role').textContent=S.user.role;
+  document.getElementById('sb-role').textContent=S.user.role.charAt(0).toUpperCase()+S.user.role.slice(1);
   document.getElementById('sb-av').textContent=S.user.initials;
   document.getElementById('sb-school').textContent=(S.user.school||'School').split(',')[0];
   renderNav();navTo('dashboard');
